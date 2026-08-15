@@ -40,15 +40,16 @@ Detailed checklist and implementation milestones for the **All Things Logistics*
 
 ---
 
-### Phase 4: Cross-Platform Client (Flutter Mobile + Web)
-- [ ] Create Flutter client scaffolding in `client/`.
-- [ ] Build Adaptive Device Frame for desktop browser testing on `logistics.campabadal.com`.
-- [ ] Build Zero-Typing UI components:
-  - [ ] Camera Vision OCR Document Ingestion view.
-  - [ ] Dynamic Smart Contextual Tap Chips (`ChoiceChip`/`ActionChip`).
-  - [ ] Single-button Generative Voice-to-Trade audio recorder.
-  - [ ] Golden Document inspection & PDF download view.
-- [ ] Build Live Enterprise Telemetry sidebar for desktop judges.
+### Phase 4: Cross-Platform Client (Flutter Mobile + Web) (100% Complete)
+- [x] Create Flutter client scaffolding in `client/`.
+- [x] Build Adaptive Device Frame for desktop browser testing (`device_frame_wrapper.dart`).
+- [x] Build Zero-Typing UI components:
+  - [x] Camera Vision OCR Document Ingestion trigger.
+  - [x] Dynamic Smart Contextual Tap Chips (`smart_chips_bar.dart`).
+  - [x] Generative Voice-to-Trade audio recorder trigger.
+  - [x] Golden Document inspection & landed cost breakdown (`golden_document_card.dart`).
+- [x] Build Live Enterprise Telemetry sidebar for desktop judges (`telemetry_sidebar.dart`).
+- [x] Codify production multi-stage Dockerfile for Cloud Run (`client/Dockerfile`).
 
 ---
 
