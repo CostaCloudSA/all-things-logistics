@@ -6,11 +6,15 @@ Detailed checklist and implementation milestones for the **All Things Logistics*
 
 ## 📋 Milestones & Task Breakdown
 
-### Phase 1: Strategic Foundations & Compliance Groundwork (100% Complete)
+### Phase 1: Strategic Foundations, Compliance & Field Research (100% Complete)
 - [x] Create Master Regulatory Database for 35+ Countries in the Americas ([`compliance/CUSTOMS_AMERICAS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/compliance/CUSTOMS_AMERICAS.md)).
-- [x] Define Fortified Enterprise Multi-Agent Architecture & Golden Documents Catalog ([`compliance/AGENTS_AND_GOLDEN_DOCUMENTS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/compliance/AGENTS_AND_GOLDEN_DOCUMENTS.md)).
+- [x] Create 45+ Question SME Field Interview Guide with "Magic Wand" AI Wishlists ([`docs/SME_INTERVIEW_QUESTIONS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/SME_INTERVIEW_QUESTIONS.md)).
+- [x] Define Expanded Enterprise Agent Roster & QA Governance Matrix ([`compliance/EXPANDED_AGENT_ROSTER.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/compliance/EXPANDED_AGENT_ROSTER.md)).
+- [x] Specify BigQuery Enterprise Data Mesh for 100% Deskless Logistics Operations ([`standards/BIGQUERY_ENTERPRISE_DATA_MESH.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/standards/BIGQUERY_ENTERPRISE_DATA_MESH.md)).
+- [x] Codify Enterprise Security, Data Governance & High Availability Standards ([`standards/SECURITY_AND_HIGH_AVAILABILITY.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/standards/SECURITY_AND_HIGH_AVAILABILITY.md)).
+- [x] Define Core Multi-Agent Swarm & Golden Documents Catalog ([`compliance/AGENTS_AND_GOLDEN_DOCUMENTS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/compliance/AGENTS_AND_GOLDEN_DOCUMENTS.md)).
 - [x] Establish Engineering Standards, OpenTelemetry Tracing & BigQuery Data Mesh Specs ([`standards/ENGINEERING_STANDARDS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/standards/ENGINEERING_STANDARDS.md)).
-- [x] Formulate Commercial Strategy, Zero-Typing Interaction Model & Bonus Points Roadmap ([`docs/PROJECT_STRATEGY_AND_QUESTIONS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/PROJECT_STRATEGY_AND_QUESTIONS.md)).
+- [x] Formulate Commercial Strategy, Zero-Typing UX & Bonus Points Roadmap ([`docs/PROJECT_STRATEGY_AND_QUESTIONS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/PROJECT_STRATEGY_AND_QUESTIONS.md)).
 - [x] Build Master Artifact Index and Readme ([`INDEX.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/INDEX.md), [`README.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/README.md)).
 
 ---
@@ -53,8 +57,8 @@ Detailed checklist and implementation milestones for the **All Things Logistics*
 
 ---
 
-### Phase 5: Hackathon Deliverables & Bonus Points (+0.6 pts)
-- [ ] Conduct meeting with naval logistics professional to lock in the primary demo route.
+### Phase 5: Field Validation, Hackathon Deliverables & Bonus Points (+0.6 pts)
+- [ ] Conduct SME field interview using 45+ question guide ([`docs/SME_INTERVIEW_QUESTIONS.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/SME_INTERVIEW_QUESTIONS.md)) to validate assumptions and lock in primary demo route.
 - [ ] Record 4-Minute Submission Demo Video:
   - [ ] Problem statement & Zero-Typing UX value proposition.
   - [ ] Live unedited execution generating Golden Documents.
