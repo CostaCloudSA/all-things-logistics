@@ -22,7 +22,7 @@ from app.api.federation import router as federation_router
 app = FastAPI(
     title="Campabadal Global Logistics - Multi-Agent Fleet API",
     description="Fortified Enterprise Multi-Agent Backend for Customs Compliance, Multi-Tenancy & Inter-Agent Federation",
-    version="1.0.0",
+    version="2.0.0",
 )
 
 # Enable CORS for Flutter Web client and custom domain
