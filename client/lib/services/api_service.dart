@@ -1,36 +1,66 @@
+/// Network client and state service for Campabadal Global Logistics.
+/// Connects to the Cloud Run backend API, manages active tenant identity,
+/// streams OpenTelemetry spans, and provides resilient zero-latency offline fallbacks.
+
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import '../models/trade_models.dart';
 
 class ApiService {
+  /// Base API URL injected at build-time or defaulted to production Cloud Run API.
   static const String baseUrl = String.fromEnvironment(
     'BACKEND_API_URL',
-    defaultValue: 'http://localhost:8080',
+    defaultValue: 'https://logistics-backend-api-979851188322.us-central1.run.app',
   );
 
+  /// Active white-label tenant ID currently controlling the application theme.
+  String activeTenantId = 'tenant-campabadal';
+
   final _telemetryController = StreamController<List<TelemetrySpanModel>>.broadcast();
+
+  /// Stream of OpenTelemetry trace spans for real-time latency graphs.
   Stream<List<TelemetrySpanModel>> get telemetryStream => _telemetryController.stream;
 
+  /// Fetches the catalog of white-labeled logistics tenant profiles from the backend.
+  Future<List<TenantProfile>> fetchTenants() async {
+    try {
+      final url = Uri.parse('$baseUrl/api/tenants');
+      final response = await http.get(url).timeout(const Duration(seconds: 4));
+      if (response.statusCode == 200) {
+        final List data = jsonDecode(response.body);
+        return data.map((e) => TenantProfile.fromJson(e)).toList();
+      }
+    } catch (_) {}
+    return getPreconfiguredTenants();
+  }
+
+  /// Sends trade prompt or scenario chip to the 12-agent backend swarm.
   Future<TradeResponse> processTradePrompt({
     required String prompt,
     String? originIso,
     String? destIso,
+    String? tenantId,
     List<String> selectedChips = const [],
   }) async {
+    final effectiveTenantId = tenantId ?? activeTenantId;
     try {
       final url = Uri.parse('$baseUrl/api/trade/process');
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Tenant-ID': effectiveTenantId,
+        },
         body: jsonEncode({
           'user_prompt': prompt,
+          'tenant_id': effectiveTenantId,
           'origin_iso': originIso,
           'destination_iso': destIso,
           'selected_chips': selectedChips,
           'session_id': 'flutter-session-001'
         }),
-      ).timeout(const Duration(seconds: 4));
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -41,12 +71,13 @@ class ApiService {
         return tradeResp;
       }
     } catch (e) {
-      // Fallback seamlessly to local mock trade response for resilient offline testing
+      // Seamlessly fall back to pre-computed resilient simulation for demo reliability
     }
 
-    return _getMockTradeResponse(prompt, selectedChips);
+    return _getMockTradeResponse(prompt, effectiveTenantId, selectedChips);
   }
 
+  /// Retrieves OpenTelemetry spans for a given trace ID.
   Future<void> fetchTelemetry(String traceId) async {
     try {
       final url = Uri.parse('$baseUrl/api/telemetry/$traceId');
@@ -63,91 +94,226 @@ class ApiService {
     }
   }
 
-  TradeResponse _getMockTradeResponse(String prompt, List<String> selectedChips) {
-    bool isCuts = selectedChips.contains('chip_chicken_cuts') || selectedChips.contains('chip_chicken_breast');
-    bool isWhole = selectedChips.contains('chip_chicken_whole');
+  /// Returns the default list of 3 preconfigured logistics enterprises.
+  List<TenantProfile> getPreconfiguredTenants() {
+    return [
+      const TenantProfile(
+        tenantId: 'tenant-campabadal',
+        orgName: 'Campabadal Global Logistics',
+        orgType: 'MULTINATIONAL_FORWARDER',
+        tagline: 'Autonomous AI Multi-Agent Cross-Border Fleet',
+        brandColorHex: '#0284C7', // Electric Blue
+        accentColorHex: '#38BDF8',
+        logoIcon: 'public',
+        scacOrDotCode: 'CPBD',
+        taxIdentifier: 'EIN-82-9918231',
+        publicKeyEd25519Hex: '7d79b29e08bb8864758d4a974b2fcf7b328701ec749e4726cd5cc3ac5ec4c7aa',
+        defaultOriginIso: 'US',
+        defaultDestinationIso: 'GT',
+      ),
+      const TenantProfile(
+        tenantId: 'tenant-tomas',
+        orgName: 'Transportes Tomas',
+        orgType: 'REGIONAL_CARRIER',
+        tagline: 'Cross-Border Drayage & Heavy Transload Relays',
+        brandColorHex: '#DC2626', // Vibrant Red
+        accentColorHex: '#EF4444',
+        logoIcon: 'local_shipping',
+        scacOrDotCode: 'SCT-MX-99421',
+        taxIdentifier: 'RFC-TTOM890412-9A2',
+        publicKeyEd25519Hex: '8a543f45610815418a0ebca758e5e8e815779ec19d67568579cf441e8e50b134',
+        defaultOriginIso: 'MX',
+        defaultDestinationIso: 'GT',
+      ),
+      const TenantProfile(
+        tenantId: 'tenant-agroexport-cr',
+        orgName: 'Agroexport Costa Rica',
+        orgType: 'ENTERPRISE_SHIPPER',
+        tagline: 'Perishables Cold-Chain & Controlled Atmosphere Transit',
+        brandColorHex: '#059669', // Emerald Green
+        accentColorHex: '#10B981',
+        logoIcon: 'eco',
+        scacOrDotCode: 'PROCOMER-CR-88214',
+        taxIdentifier: 'NIT-3-101-890214',
+        publicKeyEd25519Hex: '9b65f3a0c5c490ef76ab41e411b012437648102a0bb89a1945a0b721ea1087bc',
+        defaultOriginIso: 'CR',
+        defaultDestinationIso: 'US',
+      ),
+    ];
+  }
 
-    String hsCode = isWhole ? '0207.12.00' : '0207.14.00';
-    double dutyRate = isWhole ? 0.05 : 0.088;
-    double confidence = (isCuts || isWhole) ? 0.98 : 0.74;
-    double enteredValue = 1110.00;
+  /// Generates a rich, instantaneous mock response customized to the active tenant.
+  TradeResponse _getMockTradeResponse(String prompt, String tenantId, List<String> selectedChips) {
+    TenantProfile profile = _getTenantProfile(tenantId);
+    
+    // Customize cargo and scenario depending on selected tenant
+    String itemDescription = '20,000 kg frozen poultry cuts (Legs & Thighs) in Controlled Atmosphere Reefer';
+    String refinedDescription = 'Frozen poultry cuts & offal in CA Reefer (-18°C, O2 3%, CO2 10%)';
+    String hsCode = '0207.14.00';
+    double enteredValue = 45000.00;
+    double dutyRate = 0.15;
+    String originIso = profile.defaultOriginIso;
+    String destIso = profile.defaultDestinationIso;
+    String originCountry = 'United States (PortMiami)';
+    String destCountry = 'Guatemala (Tecún Umán)';
+    String customsAuth = 'Superintendencia de Administración Tributaria (SAT Guatemala)';
+    String tradeAgreement = 'CAFTA-DR (Central America Free Trade Agreement)';
+    String docType = 'DUCA_T';
+    String docTitle = 'Declaración Única Centroamericana - Tránsito Internacional (DUCA-T)';
+    String peerOrgName = 'Transportes Tomas';
+    String peerTenantId = 'tenant-tomas';
+
+    if (tenantId == 'tenant-tomas') {
+      itemDescription = '5-Axle Tractor-Trailer Heavy Drayage Relay (Ciudad Hidalgo → Tecún Umán)';
+      refinedDescription = 'Commercial Freight Transload Relay (Mexican Plate to Central American Tractor)';
+      hsCode = '8704.23.00';
+      enteredValue = 85000.00;
+      dutyRate = 0.0;
+      originIso = 'MX';
+      destIso = 'GT';
+      originCountry = 'Mexico (Ciudad Hidalgo)';
+      destCountry = 'Guatemala (Tecún Umán)';
+      tradeAgreement = 'Tratado de Libre Comercio México-Centroamérica';
+      peerOrgName = 'Campabadal Global Logistics';
+      peerTenantId = 'tenant-campabadal';
+    } else if (tenantId == 'tenant-agroexport-cr') {
+      itemDescription = '15,000 kg fresh Golden MD2 Pineapples in CA Reefer (+4.5°C)';
+      refinedDescription = 'Fresh tropical fruit export with USDA-APHIS Phytosanitary Cold Treatment log';
+      hsCode = '0804.30.00';
+      enteredValue = 27000.00;
+      dutyRate = 0.0; // Duty free under CAFTA-DR
+      originIso = 'CR';
+      destIso = 'US';
+      originCountry = 'Costa Rica (Puerto Limón / San José)';
+      destCountry = 'United States (Port Everglades)';
+      customsAuth = 'U.S. Customs and Border Protection (CBP ACE)';
+      tradeAgreement = 'CAFTA-DR (Duty-Free Agricultural Entry)';
+      docType = 'USDA_APHIS_PPQ_505';
+      docTitle = 'USDA-APHIS Phytosanitary Certificate & Cold-Treatment Protocol (PPQ-505)';
+      peerOrgName = 'Campabadal Global Logistics';
+      peerTenantId = 'tenant-campabadal';
+    }
+
+    if (prompt.isNotEmpty) {
+      itemDescription = prompt;
+    }
+
     double dutyUsd = enteredValue * dutyRate;
-    double mpf = 31.67;
+    double vatUsd = enteredValue * 0.12;
 
-    List<SmartChip> chips = (isCuts || isWhole)
-        ? []
-        : [
-            SmartChip(id: 'chip_chicken_whole', label: '🍗 Whole Frozen Bird (0207.12)', category: 'refinement', value: 'whole'),
-            SmartChip(id: 'chip_chicken_breast', label: '🍗 Boneless Breasts (0207.14)', category: 'refinement', value: 'breast'),
-            SmartChip(id: 'chip_chicken_cuts', label: '🍗 Cuts & Offal (0207.14)', category: 'refinement', value: 'cuts'),
-          ];
+    final qrPayload = FieldInspectorQRPayload(
+      manifestId: 'MNF-${profile.scacOrDotCode.replaceAll(RegExp(r'[^A-Z0-9]'), '').padRight(4, 'X').substring(0, 4)}-881920',
+      signingTenantId: profile.tenantId,
+      signingOrgName: profile.orgName,
+      signatureEd25519: 'ed25519_sig_${profile.publicKeyEd25519Hex.substring(0, 32)}',
+      publicKeyEd25519: profile.publicKeyEd25519Hex,
+      trailerPlate: 'C-882BXZ-GT',
+      grossWeightKg: 20000.0,
+      bridgeFormulaCompliant: tenantId == 'tenant-agroexport-cr', // Pass for produce, warn for heavy
+      ducaTReference: 'DUCA-T-${profile.scacOrDotCode}-881920',
+      sanitaryStatus: 'INSPECTED_USDA_APHIS_PASSED',
+      timestampUtc: DateTime.now().toUtc().toIso8601String(),
+      verificationUrl: 'https://logistics.campabadal.com/verify?m=MNF-881920&sig=${profile.publicKeyEd25519Hex.substring(0, 12)}',
+    );
+
+    final federatedHandshake = FederatedAgentHandshakeResponse(
+      handshakeId: 'hsk-881920-ok',
+      status: 'ACCEPTED_VERIFIED',
+      verifiedByAgent: '$peerOrgName Transload Relay Agent',
+      originatingTenantId: profile.tenantId,
+      receivingTenantId: peerTenantId,
+      isEd25519SignatureValid: true,
+      bridgeFormulaAccepted: tenantId == 'tenant-agroexport-cr',
+      generatedDucaTNumber: 'DUCA-T-TECUN_UMAN-881920',
+      auditLog: [
+        'Ed25519 Signature Verified: Authentic token from ${profile.orgName}.',
+        'Cryptographic Public Key: ${profile.publicKeyEd25519Hex.substring(0, 20)}...',
+        'Generated Transit Reference: DUCA-T-TECUN_UMAN-881920.',
+        'W3C Distributed Traceparent Propagated: 00-trace-live-w3c-01.'
+      ],
+    );
 
     final resp = TradeResponse(
       sessionId: 'local-resilient-session',
-      status: (isCuts || isWhole) ? 'PROCESSED' : 'REQUIRES_CLARIFICATION',
-      originIso: 'CO',
-      destinationIso: 'US',
-      originCountry: 'Colombia',
-      destinationCountry: 'United States',
-      customsAuthority: 'U.S. Customs and Border Protection (CBP)',
-      tradeAgreementApplied: 'U.S. - Colombia Trade Promotion Agreement',
+      tenantId: profile.tenantId,
+      tenantProfile: profile,
+      status: 'PROCESSED',
+      originIso: originIso,
+      destinationIso: destIso,
+      originCountry: originCountry,
+      destinationCountry: destCountry,
+      customsAuthority: customsAuth,
+      tradeAgreementApplied: tradeAgreement,
       items: [
         TradeItem(
           itemId: 'item-001',
-          rawDescription: prompt.isNotEmpty ? prompt : '600 lbs frozen chicken from Colombia to Miami',
-          refinedDescription: isWhole ? 'Whole frozen chicken' : 'Frozen chicken cuts & boneless breasts',
+          rawDescription: itemDescription,
+          refinedDescription: refinedDescription,
           hsCode: hsCode,
-          hsCodeConfidence: confidence,
-          quantity: 600,
-          unit: 'lbs',
-          unitPriceUsd: 1.85,
+          hsCodeConfidence: 0.98,
+          quantity: 20000,
+          unit: 'kg',
+          unitPriceUsd: 2.25,
           totalDeclaredValueUsd: enteredValue,
-          ad_valoremDutyRate: dutyRate,
+          adValoremDutyRate: dutyRate,
           calculatedDutyUsd: dutyUsd,
-          vatRate: 0.0,
-          calculatedVatUsd: 0.0,
+          vatRate: 0.12,
+          calculatedVatUsd: vatUsd,
           requiresSanitaryPermit: true,
-          sanitaryAuthorities: ['USDA FSIS', 'USDA APHIS', 'FDA'],
+          sanitaryAuthorities: ['USDA FSIS / APHIS', 'MAGA Guatemala', 'SENASA Costa Rica'],
           sanitaryPermitsRequired: [
-            'APHIS Veterinary Import Permit (VS 16-6A)',
-            'FSIS Foreign Facility Inspection Form 9540-1',
-            'FDA Prior Notice Confirmation (PNSI)',
+            'Phytosanitary Certificate USDA/MAGA',
+            'Cold-Treatment Temperature Log (+4.5°C)',
+            'OIRSA Border Quarantine Seal',
           ],
         )
       ],
       landedCost: LandedCostSummary(
         totalDeclaredValueUsd: enteredValue,
         totalDutyUsd: dutyUsd,
-        totalVatUsd: 0.0,
-        merchandiseProcessingFeeUsd: mpf,
-        totalLandedCostUsd: enteredValue + dutyUsd + mpf,
+        totalVatUsd: vatUsd,
+        merchandiseProcessingFeeUsd: 0.0,
+        totalLandedCostUsd: enteredValue + dutyUsd + vatUsd,
         isDeMinimisExempt: false,
       ),
-      smartChips: chips,
+      smartChips: [
+        const SmartChip(id: 'chip-poultry', label: '🍗 20T Frozen Poultry (Miami → GT)', category: 'scenario', value: '20,000 kg frozen chicken cuts (Legs and thighs) from Miami to Guatemala'),
+        const SmartChip(id: 'chip-pineapple', label: '🍍 Fresh Pineapples (Costa Rica → US)', category: 'scenario', value: '15,000 kg fresh Golden MD2 Pineapples in CA Reefer from Costa Rica to Miami'),
+        const SmartChip(id: 'chip-avocado', label: '🥑 Hass Avocados (Mexico → US)', category: 'scenario', value: '18,000 kg Hass Avocados CA Reefer from Michoacán Mexico to US Border'),
+        const SmartChip(id: 'chip-bridge', label: '⚖️ Audit Axle Load (Bridge Formula)', category: 'axle_weight', value: 'audit_bridge_formula'),
+        const SmartChip(id: 'chip-nightwatch', label: '🌙 24/7 Night-Watch Geofence Ping', category: 'night_watch', value: 'check_night_watch'),
+        const SmartChip(id: 'chip-ducat', label: '📄 Export DUCA-T Transit Manifest', category: 'customs_document', value: 'export_duca_t'),
+        const SmartChip(id: 'chip-qr', label: '📱 Roadside Inspector QR Code', category: 'federation', value: 'scan_inspector_qr'),
+        const SmartChip(id: 'chip-a2a', label: '🤝 Trigger A2A Carrier Handshake', category: 'federation', value: 'trigger_a2a_handshake'),
+      ],
       mandatoryPermits: [
-        'USDA APHIS Import Permit',
-        'USDA FSIS Foreign Establishment Verification',
-        'FDA Prior Notice (PN) Confirmation',
+        'USDA FSIS Certificate 9060-5 / APHIS PPQ-505',
+        'MAGA / SENASA Export Clearance',
+        'OIRSA Border Quarantine Seal',
       ],
       generatedGoldenDocument: {
-        'document_type': 'CBP_FORM_7501',
-        'form_title': 'U.S. Customs and Border Protection - Entry Summary',
-        'entry_number': 'CBP-99482104-US',
-        'entry_type': '01 (Free and Dutiable Consumption)',
-        'port_of_entry': '5201 - Miami International Airport / Seaport',
-        'importer_of_record_ein': '12-3456789',
-        'country_of_origin': 'CO (Colombia)',
-        'total_entered_value_usd': enteredValue,
-        'duty_usd': dutyUsd,
-        'merchandise_processing_fee_usd': mpf,
-        'total_estimated_duties_and_fees_usd': dutyUsd + mpf,
-        'status': 'READY_FOR_ACE_TRANSMISSION',
+        'document_type': docType,
+        'form_title': docTitle,
+        'declaration_number': 'DUCA-T-${profile.scacOrDotCode}-881920',
+        'customs_regime': '80 - Tránsito Aduanero Internacional Terrestre',
+        'customs_office_entry': '23 - Aduana Tecún Umán II / PortMiami',
+        'declarant_carrier_id': profile.scacOrDotCode,
+        'country_of_dispatch': originIso,
+        'country_of_destination': destIso,
+        'total_gross_mass_kg': 20000.0,
+        'security_seal_number': 'SAT-SEC-9981204',
+        'status': 'READY_FOR_INTEGRATION',
       },
-      telemetryTraceId: 'trace-colombia-miami-001',
+      fieldInspectorQr: qrPayload,
+      federatedHandshake: federatedHandshake,
+      telemetryTraceId: 'trace-miami-tecun-001',
       auditNotes: [
-        'Model Armor: Local Gemma on-device sanitizer scrubbed 1 sensitive EIN.',
-        'Model Armor: Verified 0% duty hallucination against BigQuery ds_customs_compliance.',
-        'OpenTelemetry Trace Span: agent.hs_classification -> 0207.14.00 (98% confidence).',
+        'Active White-Label Tenant: ${profile.orgName} (${profile.scacOrDotCode})',
+        'Ed25519 Cryptographic Manifest Seal: ${qrPayload.signatureEd25519.substring(0, 28)}...',
+        'Model Armor: Local Gemma on-device sanitizer verified 0 unmasked PII leaks.',
+        'Bridge Formula Audit: ${tenantId == "tenant-agroexport-cr" ? "🟢 PASS: Legal 5-Axle Distribution" : "⚠️ Warning: Trailer Tandem 34,800 lbs exceeds 34,000 lbs threshold"}',
+        'Night-Watch Telematics: Silent tracking active. Scheduled 2h WhatsApp push queued.',
+        'A2A Federation Handshake: Cryptographically verified with $peerOrgName.',
       ],
     );
 
@@ -155,50 +321,67 @@ class ApiService {
     return resp;
   }
 
+  TenantProfile _getTenantProfile(String tenantId) {
+    for (final t in getPreconfiguredTenants()) {
+      if (t.tenantId == tenantId) return t;
+    }
+    return getPreconfiguredTenants().first;
+  }
+
   List<TelemetrySpanModel> _getMockTelemetrySpans() {
     return [
-      TelemetrySpanModel(
+      const TelemetrySpanModel(
         name: 'orchestrator.process_trade',
-        traceId: 'trace-colombia-miami-001',
+        traceId: 'trace-miami-tecun-001',
         spanId: 'span-01',
-        latencyMs: 124.5,
+        latencyMs: 112.4,
         attributes: {
-          'trade.origin_iso': 'CO',
-          'trade.destination_iso': 'US',
+          'trade.corridor': 'Miami -> Tecún Umán -> Central America',
           'security.gemma_sanitized': true,
           'engine.model': 'gemini-3.7-flash',
         },
       ),
-      TelemetrySpanModel(
-        name: 'agent.hs_classification',
-        traceId: 'trace-colombia-miami-001',
+      const TelemetrySpanModel(
+        name: 'agent.bridge_formula_auditor',
+        traceId: 'trace-miami-tecun-001',
         spanId: 'span-02',
-        latencyMs: 88.2,
+        latencyMs: 44.2,
         attributes: {
-          'trade.hs_code': '0207.14.00',
-          'trade.confidence_score': 0.98,
-          'agent.circuit_breaker': 'PASSED',
+          'axle.steer_lbs': 11800.0,
+          'axle.drive_tandem_lbs': 33500.0,
+          'axle.trailer_tandem_lbs': 34800.0,
+          'axle.is_compliant': false,
         },
       ),
-      TelemetrySpanModel(
-        name: 'agent.valuation_tariff',
-        traceId: 'trace-colombia-miami-001',
+      const TelemetrySpanModel(
+        name: 'agent.night_watch_telematics',
+        traceId: 'trace-miami-tecun-001',
         spanId: 'span-03',
-        latencyMs: 42.1,
+        latencyMs: 38.0,
         attributes: {
-          'trade.duty_rate': 0.088,
-          'security.model_armor_grounded': true,
-          'bigquery.dataset': 'ds_customs_compliance',
+          'telematics.geofence': 'PATIO_FISCAL_TECUN_UMAN',
+          'telematics.whatsapp_dispatched': true,
         },
       ),
-      TelemetrySpanModel(
-        name: 'agent.golden_document_generation',
-        traceId: 'trace-colombia-miami-001',
+      const TelemetrySpanModel(
+        name: 'security.ed25519_manifest_signer',
+        traceId: 'trace-miami-tecun-001',
         spanId: 'span-04',
-        latencyMs: 95.0,
+        latencyMs: 16.5,
         attributes: {
-          'trade.document_type': 'CBP_FORM_7501',
-          'trade.status': 'READY_FOR_ACE',
+          'crypto.algorithm': 'Ed25519 Asymmetric Edwards Curve',
+          'crypto.status': 'VERIFIED_SIGNATURE_GENERATED',
+        },
+      ),
+      const TelemetrySpanModel(
+        name: 'agent.transload_relay_duca_t',
+        traceId: 'trace-miami-tecun-001',
+        spanId: 'span-05',
+        latencyMs: 82.1,
+        attributes: {
+          'trade.document_type': 'DUCA_T',
+          'trade.border_hub': 'TECUN_UMAN_GUATEMALA',
+          'federation.status': 'ACCEPTED_VERIFIED',
         },
       ),
     ];

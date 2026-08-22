@@ -1,3 +1,7 @@
+/// Live OpenTelemetry Distributed Tracing Sidebar.
+/// Displays real-time agent execution spans, model latency, Model Armor sanitization state,
+/// and BigQuery deterministic grounding telemetry.
+
 import 'package:flutter/material.dart';
 import '../models/trade_models.dart';
 import '../services/api_service.dart';
@@ -9,7 +13,7 @@ class TelemetrySidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFF0B1120),
+        color: Color(0xFF070B14),
         border: Border(left: BorderSide(color: Color(0xFF1E293B), width: 1.5)),
       ),
       padding: const EdgeInsets.all(24),
@@ -22,10 +26,10 @@ class TelemetrySidebar extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3B82F6).withOpacity(0.15),
+                  color: const Color(0xFF0284C7).withOpacity(0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.analytics_outlined, color: Color(0xFF60A5FA), size: 20),
+                child: const Icon(Icons.analytics_outlined, color: Color(0xFF38BDF8), size: 20),
               ),
               const SizedBox(width: 12),
               Column(
@@ -59,9 +63,9 @@ class TelemetrySidebar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFF131D31),
+              color: const Color(0xFF0F172A),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF1E293B)),
+              border: Border.all(color: Colors.white.withOpacity(0.08)),
             ),
             child: Column(
               children: [
@@ -110,9 +114,9 @@ class TelemetrySidebar extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF131D31),
+                        color: const Color(0xFF0F172A),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xFF1E293B)),
+                        border: Border.all(color: Colors.white.withOpacity(0.06)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +151,7 @@ class TelemetrySidebar extends StatelessWidget {
                               return Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF0B1120),
+                                  color: const Color(0xFF070B14),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(

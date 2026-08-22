@@ -1,31 +1,30 @@
-# Multi-stage Dockerfile for Flutter Web Deployment on Google Cloud Run
-# Stage 1: Build the Flutter Web Application
+# Multi-stage Dockerfile for Flutter Web Client on Google Cloud Run
+# Stage 1: Build the Flutter Web application
 FROM ghcr.io/cirruslabs/flutter:stable AS build
 
 WORKDIR /app
-COPY pubspec.yaml .
+
+# Copy pubspec and fetch dependencies
+COPY pubspec.yaml pubspec.lock* ./
 RUN flutter pub get
 
+# Copy client source code
 COPY . .
-RUN flutter build web --release
 
-# Stage 2: Production NGINX Server on Cloud Run
+# Build Flutter Web in release mode with CanvasKit/HTML rendering
+ARG BACKEND_API_URL=https://logistics.campabadal.com
+RUN flutter build web --release --dart-define=BACKEND_API_URL=${BACKEND_API_URL}
+
+# Stage 2: Serve the compiled web bundle via lightweight NGINX
 FROM nginx:alpine
 
-# Copy compiled Flutter web assets to NGINX root
+# Copy custom NGINX configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy build artifacts from builder stage
 COPY --from=build /app/build/web /usr/share/nginx/html
 
-# Custom NGINX configuration for Cloud Run (port 8080) and SPA routing
-RUN echo 'server { \
-    listen 8080; \
-    server_name localhost; \
-    location / { \
-        root /usr/share/nginx/html; \
-        index index.html index.htm; \
-        try_files $uri $uri/ /index.html; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
-
+# Expose port 8080 for Google Cloud Run
 EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]

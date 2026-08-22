@@ -1,6 +1,7 @@
 """
 High-fidelity local mock database for Customs Agencies, De Minimis thresholds,
-Harmonized System (HS) classifications, tariff schedules, and sanitary permit rules across the Americas.
+Harmonized System (HS) classifications, tariff schedules, sanitary permit rules,
+Federal Bridge Formula limits, non-resident foreign tax withholdings, and border transload hubs across the Americas.
 """
 
 from typing import Dict, Any, List, Optional
@@ -26,6 +27,56 @@ MOCK_COUNTRIES: Dict[str, Dict[str, Any]] = {
         "currency": "MXN",
         "sanitary_agencies": ["SENASICA (SADER)", "COFEPRIS"]
     },
+    "GT": {
+        "name": "Guatemala",
+        "customs_authority": "Superintendencia de Administración Tributaria (SAT Guatemala)",
+        "electronic_portal": "DUCA Portal / SAQD",
+        "de_minimis_usd": 50.0,
+        "tax_de_minimis_usd": 50.0,
+        "default_golden_doc": "DUCA_T",
+        "currency": "GTQ",
+        "sanitary_agencies": ["MAGA (VISAR)", "MSPAS"]
+    },
+    "SV": {
+        "name": "El Salvador",
+        "customs_authority": "Dirección General de Aduanas (DGA El Salvador)",
+        "electronic_portal": "SIDUNEA World / DUCA",
+        "de_minimis_usd": 50.0,
+        "tax_de_minimis_usd": 50.0,
+        "default_golden_doc": "DUCA_T",
+        "currency": "USD",
+        "sanitary_agencies": ["MAG", "MINSAL"]
+    },
+    "HN": {
+        "name": "Honduras",
+        "customs_authority": "Administración Aduanera de Honduras (Aduanas Honduras)",
+        "electronic_portal": "SAR / DUCA",
+        "de_minimis_usd": 50.0,
+        "tax_de_minimis_usd": 50.0,
+        "default_golden_doc": "DUCA_T",
+        "currency": "HNL",
+        "sanitary_agencies": ["SENASA", "ARSA"]
+    },
+    "NI": {
+        "name": "Nicaragua",
+        "customs_authority": "Dirección General de Servicios Aduaneros (DGA Nicaragua)",
+        "electronic_portal": "SIDUNEA++ / DUCA",
+        "de_minimis_usd": 50.0,
+        "tax_de_minimis_usd": 50.0,
+        "default_golden_doc": "DUCA_T",
+        "currency": "NIO",
+        "sanitary_agencies": ["IPSA", "MINSA"]
+    },
+    "CR": {
+        "name": "Costa Rica",
+        "customs_authority": "Servicio Nacional de Aduanas (SNA) / Hacienda",
+        "electronic_portal": "TICA / DUCA",
+        "de_minimis_usd": 0.0,
+        "tax_de_minimis_usd": 0.0,
+        "default_golden_doc": "DUCA_T",
+        "currency": "CRC",
+        "sanitary_agencies": ["MAG / SENASA", "Ministerio de Salud"]
+    },
     "CO": {
         "name": "Colombia",
         "customs_authority": "Dirección de Impuestos y Aduanas Nacionales (DIAN)",
@@ -45,16 +96,6 @@ MOCK_COUNTRIES: Dict[str, Dict[str, Any]] = {
         "default_golden_doc": "DUIMP",
         "currency": "BRL",
         "sanitary_agencies": ["MAPA (SIF)", "ANVISA"]
-    },
-    "CR": {
-        "name": "Costa Rica",
-        "customs_authority": "Servicio Nacional de Aduanas (SNA) / Hacienda",
-        "electronic_portal": "TICA",
-        "de_minimis_usd": 0.0,
-        "tax_de_minimis_usd": 0.0,
-        "default_golden_doc": "DUCA_D",
-        "currency": "CRC",
-        "sanitary_agencies": ["MAG / SENASA", "Ministerio de Salud"]
     },
     "CA": {
         "name": "Canada",
@@ -88,6 +129,139 @@ MOCK_COUNTRIES: Dict[str, Dict[str, Any]] = {
     }
 }
 
+# Federal & Central American Bridge Formula Weight Limits
+MOCK_BRIDGE_FORMULA_LIMITS: Dict[str, Dict[str, Any]] = {
+    "US_FEDERAL_TITLE_23": {
+        "max_steer_axle_lbs": 12000.0,
+        "max_drive_tandem_lbs": 34000.0,
+        "max_trailer_tandem_lbs": 34000.0,
+        "max_gross_weight_lbs": 80000.0,
+        "unit": "lbs",
+        "regulatory_statute": "23 U.S.C. § 127 / Federal Bridge Formula B"
+    },
+    "CENTRAL_AMERICA_SIECA": {
+        "max_steer_axle_lbs": 11023.0, # 5,000 kg
+        "max_drive_tandem_lbs": 33069.0, # 15,000 kg
+        "max_trailer_tandem_lbs": 33069.0, # 15,000 kg
+        "max_gross_weight_lbs": 88184.0, # 40,000 kg (40 Tonnes)
+        "unit": "lbs",
+        "regulatory_statute": "Reglamento Centroamericano de Pesos y Dimensiones (SIECA COMIECO)"
+    },
+    "MEXICO_NOM_012_SCT": {
+        "max_steer_axle_lbs": 14330.0, # 6,500 kg
+        "max_drive_tandem_lbs": 39683.0, # 18,000 kg
+        "max_trailer_tandem_lbs": 39683.0, # 18,000 kg
+        "max_gross_weight_lbs": 90389.0, # 41,000 kg (T3-S2 Standard)
+        "unit": "lbs",
+        "regulatory_statute": "NOM-012-SCT-2-2017 Pesos y Dimensiones"
+    }
+}
+
+# Statutory Non-Resident Foreign Withholding Tax Schedules (SME Discovery)
+MOCK_NON_RESIDENT_WITHHOLDINGS: Dict[str, Dict[str, Any]] = {
+    "SV": {
+        "country_name": "El Salvador",
+        "statutory_withholding_rate": 0.20, # 20%
+        "legal_basis": "Ley de Impuesto sobre la Renta de El Salvador, Art. 158 (Remesas por servicios al exterior)",
+        "applies_to": "Servicios de transporte, intermediación y fletes cobrados por no residentes"
+    },
+    "CR": {
+        "country_name": "Costa Rica",
+        "statutory_withholding_rate": 0.15, # 15%
+        "legal_basis": "Ley N° 7092 de Impuesto sobre la Renta, Art. 59 (Remesas al Exterior)",
+        "applies_to": "Fletes y servicios técnicos pagados a casas matrices o proveedores no domiciliados"
+    },
+    "GT": {
+        "country_name": "Guatemala",
+        "statutory_withholding_rate": 0.15, # 15%
+        "legal_basis": "Decreto 10-2012 Ley de Actualización Tributaria, Libro I Impuesto sobre la Renta",
+        "applies_to": "Rentas de no residentes por transporte internacional y comisiones"
+    },
+    "HN": {
+        "country_name": "Honduras",
+        "statutory_withholding_rate": 0.25, # 25%
+        "legal_basis": "Decreto 170-2016 Código Tributario de Honduras",
+        "applies_to": "Pagos a personas jurídicas extranjeras no domiciliadas"
+    },
+    "NI": {
+        "country_name": "Nicaragua",
+        "statutory_withholding_rate": 0.15, # 15%
+        "legal_basis": "Ley 822 Ley de Concertación Tributaria, Art. 53",
+        "applies_to": "Servicios de transporte y flete originados en el país"
+    },
+    "CO": {
+        "country_name": "Colombia",
+        "statutory_withholding_rate": 0.20, # 20%
+        "legal_basis": "Estatuto Tributario de Colombia, Art. 408",
+        "applies_to": "Pagos al exterior por consultoría, servicios y fletes marítimos/terrestres"
+    },
+    "MX": {
+        "country_name": "Mexico",
+        "statutory_withholding_rate": 0.25, # 25%
+        "legal_basis": "Ley del Impuesto sobre la Renta (LISR), Título V, Art. 167",
+        "applies_to": "Servicios y fletes contratados con entidades sin establecimiento permanente"
+    }
+}
+
+# Border Transload Hubs & Cabotage Relay Yards
+MOCK_BORDER_TERMINALS: Dict[str, Dict[str, Any]] = {
+    "TECUN_UMAN": {
+        "name": "Tecún Umán Multi-Modal Transload Hub",
+        "country_a": "MX",
+        "country_b": "GT",
+        "bridge_name": "Puente Internacional Rodolfo Robles",
+        "cabotage_rule": "Mexican trucks cannot enter Central America. Cargo must transload to Central American rigs.",
+        "primary_transit_doc": "DUCA-T (Declaración Única Centroamericana de Tránsito)",
+        "coordinates": {"lat": 14.6739, "lng": -92.1438},
+        "transfer_yards": ["Patio Fiscal Tecún I", "Cross-Dock Rodolfo Robles", "Bodega Aduanal San Cristóbal"]
+    },
+    "PENAS_BLANCAS": {
+        "name": "Peñas Blancas Border Terminal",
+        "country_a": "NI",
+        "country_b": "CR",
+        "bridge_name": "Paso Fronterizo Peñas Blancas",
+        "cabotage_rule": "Direct transit allowed under DUCA-T with verified international carrier permit.",
+        "primary_transit_doc": "DUCA-T",
+        "coordinates": {"lat": 11.2186, "lng": -85.6111},
+        "transfer_yards": ["Zona Primaria Peñas Blancas", "Depósito Fiscal La Cruz"]
+    },
+    "PASO_CANOAS": {
+        "name": "Paso Canoas Border Terminal",
+        "country_a": "CR",
+        "country_b": "PA",
+        "bridge_name": "Paso Fronterizo Canoas",
+        "cabotage_rule": "Reciprocal binational drayage and direct bonded trailer transit.",
+        "primary_transit_doc": "DUCA-T / Formulario DM-PA",
+        "coordinates": {"lat": 8.5322, "lng": -82.8394},
+        "transfer_yards": ["Depósito Aduanero Canoas", "Recinto Fiscal Fronterizo"]
+    }
+}
+
+# Denied Entities & Watchlists for Sanctions Screener
+MOCK_SANCTIONS_WATCHLIST: List[Dict[str, Any]] = [
+    {
+        "entity_name": "TRANSCARGO GLOBAL LOGISTICS LTD",
+        "list_source": "OFAC SDN (Specially Designated Nationals)",
+        "program": "SDGT (Global Terrorism)",
+        "country": "IR",
+        "risk_level": "BLOCKED_CRITICAL"
+    },
+    {
+        "entity_name": "PACIFIC OCEAN SHIPPING CORP",
+        "list_source": "BIS Entity List",
+        "program": "Export Administration Regulations (EAR)",
+        "country": "RU",
+        "risk_level": "BLOCKED_CRITICAL"
+    },
+    {
+        "entity_name": "CARIBE AGROEXPORTACIONES S.A.",
+        "list_source": "INTERPOL Red Notice / Anti-Narcotics Watchlist",
+        "program": "Transnational Organized Crime",
+        "country": "CO",
+        "risk_level": "HIGH_INSPECTION_MANDATORY"
+    }
+]
+
 MOCK_HS_DATABASE: List[Dict[str, Any]] = [
     # Poultry
     {
@@ -113,6 +287,18 @@ MOCK_HS_DATABASE: List[Dict[str, Any]] = [
         "requires_sanitary_permit": True,
         "sanitary_authorities": ["USDA FSIS", "USDA APHIS", "FDA Prior Notice"],
         "permits_required": ["APHIS Import Permit", "FSIS Form 9540-1", "FDA Prior Notice Confirmation"]
+    },
+    {
+        "hs_code": "0207.14.00",
+        "hs_code_root": "0207",
+        "description_en": "Meat and edible offal of poultry: Frozen cuts for Guatemala / Central America",
+        "description_es": "Carne y despojos comestibles de aves: Trozos y despojos congelados para Centroamérica",
+        "destination_iso": "GT",
+        "ad_valorem_rate": 0.15, # 15% DAI
+        "vat_rate": 0.12, # 12% IVA
+        "requires_sanitary_permit": True,
+        "sanitary_authorities": ["MAGA (VISAR)"],
+        "permits_required": ["Permiso Zoosanitario de Importación MAGA", "Certificado Veterinario de Origen"]
     },
     {
         "hs_code": "0207.14.99",
@@ -199,6 +385,22 @@ def lookup_tariff(hs_code: str, destination_iso: str) -> Optional[Dict[str, Any]
         if entry["destination_iso"] == destination_iso.upper():
             if entry["hs_code"].startswith(hs_code[:4]):
                 return entry
+    return None
+
+def lookup_bridge_formula(jurisdiction: str = "US_FEDERAL_TITLE_23") -> Optional[Dict[str, Any]]:
+    return MOCK_BRIDGE_FORMULA_LIMITS.get(jurisdiction.upper())
+
+def lookup_non_resident_withholding(country_iso: str) -> Optional[Dict[str, Any]]:
+    return MOCK_NON_RESIDENT_WITHHOLDINGS.get(country_iso.upper())
+
+def lookup_border_terminal(terminal_code: str) -> Optional[Dict[str, Any]]:
+    return MOCK_BORDER_TERMINALS.get(terminal_code.upper())
+
+def screen_sanctions_entity(name: str) -> Optional[Dict[str, Any]]:
+    name_clean = name.upper().strip()
+    for entity in MOCK_SANCTIONS_WATCHLIST:
+        if entity["entity_name"] in name_clean or name_clean in entity["entity_name"]:
+            return entity
     return None
 
 def search_hs_codes(keyword: str, destination_iso: str = "US") -> List[Dict[str, Any]]:

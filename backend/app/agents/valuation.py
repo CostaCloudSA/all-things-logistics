@@ -1,14 +1,15 @@
 from typing import Dict, Any, List
 from app.agents.base import BaseAgent
 from app.core.telemetry import OpenTelemetrySpan
-from app.core.mock_tariff_db import lookup_country, lookup_tariff
+from app.core.mock_tariff_db import lookup_country, lookup_tariff, lookup_non_resident_withholding
 from app.security.model_armor import model_armor
 from app.models.schemas import LandedCostSummary, TradeItem
 
 class ValuationTariffAgent(BaseAgent):
     """
     Valuation & Landed Cost Agent.
-    Calculates exact customs duties, national VAT/IVA, processing fees, and De Minimis exemptions.
+    Calculates exact customs duties, national VAT/IVA, processing fees, De Minimis exemptions,
+    and statutory Non-Resident Foreign Income Tax Withholdings (SME Discovery).
     Enforces deterministic Model Armor verification on all calculated tariffs.
     """
     def __init__(self):
@@ -21,9 +22,11 @@ class ValuationTariffAgent(BaseAgent):
 
     def process(self, payload: Dict[str, Any], span: OpenTelemetrySpan) -> Dict[str, Any]:
         destination_iso = payload.get("destination_iso", "US").upper()
+        origin_iso = payload.get("origin_iso", "US").upper()
         items: List[TradeItem] = payload.get("items", [])
 
         span.set_attribute("trade.destination_iso", destination_iso)
+        span.set_attribute("trade.origin_iso", origin_iso)
         span.set_attribute("trade.items_count", len(items))
 
         country_data = lookup_country(destination_iso) or {}
@@ -63,6 +66,15 @@ class ValuationTariffAgent(BaseAgent):
         mpf = 31.67 if destination_iso == "US" and not is_de_minimis and total_declared_val > 0 else 0.0
         hmf = 0.0 # Harbor Maintenance Fee
 
+        # Non-Resident Withholding Tax Check (SME Discovery)
+        withholding_info = lookup_non_resident_withholding(destination_iso)
+        withholding_tax_usd = 0.0
+        withholding_note = None
+        if withholding_info and origin_iso != destination_iso:
+            withholding_rate = withholding_info["statutory_withholding_rate"]
+            withholding_tax_usd = round(total_declared_val * withholding_rate, 2)
+            withholding_note = f"Non-Resident Withholding ({withholding_rate*100}%): {withholding_info['legal_basis']}"
+
         landed_cost = LandedCostSummary(
             total_declared_value_usd=round(total_declared_val, 2),
             total_duty_usd=round(total_duty, 2),
@@ -75,10 +87,14 @@ class ValuationTariffAgent(BaseAgent):
 
         span.set_attribute("trade.total_landed_cost_usd", landed_cost.total_landed_cost_usd)
         span.set_attribute("trade.is_de_minimis", is_de_minimis)
+        if withholding_tax_usd > 0:
+            span.set_attribute("trade.foreign_withholding_tax_usd", withholding_tax_usd)
 
         return {
             "items": items,
-            "landed_cost": landed_cost
+            "landed_cost": landed_cost,
+            "foreign_withholding_tax_usd": withholding_tax_usd,
+            "withholding_note": withholding_note
         }
 
     def fallback_heuristic(self, prompt: str) -> str:

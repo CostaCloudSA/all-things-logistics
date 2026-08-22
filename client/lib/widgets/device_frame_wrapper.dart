@@ -1,3 +1,8 @@
+/// Responsive Device Frame Wrapper.
+/// Renders an adaptive layout:
+/// - Desktop (width > 900px): Centered smartphone frame showcasing deskless mobile ergonomics alongside a live OpenTelemetry sidebar.
+/// - Mobile / Tablet: Full-screen native experience for on-the-field use.
+
 import 'package:flutter/material.dart';
 import 'telemetry_sidebar.dart';
 
@@ -28,15 +33,15 @@ class DeviceFrameWrapper extends StatelessWidget {
                 child: Center(
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 24),
-                    width: 410,
-                    height: 840,
+                    width: 420,
+                    height: 860,
                     decoration: BoxDecoration(
                       color: const Color(0xFF0F172A),
                       borderRadius: BorderRadius.circular(44),
                       border: Border.all(color: const Color(0xFF334155), width: 6),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF3B82F6).withOpacity(0.15),
+                          color: const Color(0xFF0284C7).withOpacity(0.2),
                           blurRadius: 40,
                           spreadRadius: 4,
                           offset: const Offset(0, 10),

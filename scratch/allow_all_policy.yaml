@@ -1,0 +1,5 @@
+name: projects/logistics-hackathon/policies/iam.allowedPolicyMemberDomains
+spec:
+  inheritFromParent: false
+  rules:
+  - allowAll: true

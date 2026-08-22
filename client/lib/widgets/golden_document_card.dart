@@ -1,3 +1,7 @@
+/// Golden Customs Document Card.
+/// Formats and displays generated official international trade declarations
+/// (DUCA-T, USMCA COO, CBP 7501, SAT Pedimento) with landed cost and sanitary permit matrices.
+
 import 'package:flutter/material.dart';
 import '../models/trade_models.dart';
 
@@ -14,9 +18,9 @@ class GoldenDocumentCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: const Color(0xFF0F172A),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF334155), width: 1.5),
+        border: Border.all(color: Colors.white.withOpacity(0.08), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
@@ -94,15 +98,15 @@ class GoldenDocumentCard extends StatelessWidget {
           // Core Trade Metadata Grid
           Row(
             children: [
-              _buildMetaCell('PORT OF ENTRY', doc['port_of_entry'] ?? '5201 - Miami, FL'),
-              _buildMetaCell('ORIGIN', '${response.originCountry} (${response.originIso})'),
+              _buildMetaCell('CUSTOMS REGIME', doc['customs_regime'] ?? '80 - Tránsito Terrestre'),
+              _buildMetaCell('ORIGIN / DISPATCH', '${response.originCountry} (${response.originIso})'),
             ],
           ),
           const SizedBox(height: 12),
           Row(
             children: [
-              _buildMetaCell('IMPORTER EIN', doc['importer_of_record_ein'] ?? '12-3456789'),
-              _buildMetaCell('ENTRY NUMBER', doc['entry_number'] ?? 'CBP-99482104-US'),
+              _buildMetaCell('DECLARANT ID', doc['declarant_carrier_id'] ?? response.tenantProfile?.scacOrDotCode ?? 'CPBD'),
+              _buildMetaCell('DECLARATION #', doc['declaration_number'] ?? doc['entry_number'] ?? 'DUCA-T-881920-GT'),
             ],
           ),
 
@@ -112,19 +116,23 @@ class GoldenDocumentCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F172A),
+              color: const Color(0xFF070B14),
               borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white.withOpacity(0.06)),
             ),
             child: Column(
               children: [
                 _buildCostRow('Declared Value (FOB):', '\$${response.landedCost.totalDeclaredValueUsd.toStringAsFixed(2)}'),
                 const SizedBox(height: 6),
-                _buildCostRow('Ad Valorem Duty (${response.items.isNotEmpty ? (response.items.first.adValoremDutyRate * 100).toStringAsFixed(1) : "0"}%):', '\$${response.landedCost.totalDutyUsd.toStringAsFixed(2)}'),
+                _buildCostRow(
+                  'Ad Valorem Duty (${response.items.isNotEmpty ? (response.items.first.adValoremDutyRate * 100).toStringAsFixed(1) : "0"}%):',
+                  '\$${response.landedCost.totalDutyUsd.toStringAsFixed(2)}',
+                ),
                 const SizedBox(height: 6),
-                _buildCostRow('Merchandise Processing Fee (MPF):', '\$${response.landedCost.merchandiseProcessingFeeUsd.toStringAsFixed(2)}'),
+                _buildCostRow('VAT / Tax (${response.destinationIso}):', '\$${response.landedCost.totalVatUsd.toStringAsFixed(2)}'),
                 const Divider(color: Color(0xFF334155), height: 16),
                 _buildCostRow(
-                  'TOTAL ESTIMATED DUTIES & FEES:',
+                  'TOTAL ESTIMATED DUTIES & TAXES:',
                   '\$${response.landedCost.totalLandedCostUsd.toStringAsFixed(2)}',
                   isTotal: true,
                 ),
@@ -134,10 +142,10 @@ class GoldenDocumentCard extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Sanitary Permits
+          // Mandatory Sanitary Permits
           if (response.mandatoryPermits.isNotEmpty) ...[
             const Text(
-              'MANDATORY HEALTH & VETERINARY FILINGS',
+              'MANDATORY HEALTH & PHYTOSANITARY FILINGS',
               style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 6),
@@ -166,7 +174,7 @@ class GoldenDocumentCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB),
+                backgroundColor: const Color(0xFF0284C7),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
