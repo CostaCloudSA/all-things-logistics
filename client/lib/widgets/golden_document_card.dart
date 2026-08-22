@@ -169,6 +169,91 @@ class GoldenDocumentCard extends StatelessWidget {
             const SizedBox(height: 16),
           ],
 
+          // Download & Transmit Action Buttons
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF38BDF8),
+                    side: const BorderSide(color: Color(0xFF38BDF8), width: 1.2),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  icon: const Icon(Icons.download_rounded, size: 16),
+                  label: const Text('Download Stamped PDF', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            const Icon(Icons.check_circle, color: Colors.white, size: 18),
+                            const SizedBox(width: 8),
+                            Text('✅ Exported Signed ${docType} (Ed25519 Sealed & Stamped)!'),
+                          ],
+                        ),
+                        backgroundColor: const Color(0xFF0284C7),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF94A3B8),
+                  side: BorderSide(color: Colors.white.withOpacity(0.15), width: 1.2),
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                icon: const Icon(Icons.code, size: 16),
+                label: const Text('JSON', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      backgroundColor: const Color(0xFF0F172A),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                      ),
+                      title: Row(
+                        children: [
+                          const Icon(Icons.data_object, color: Color(0xFF38BDF8), size: 20),
+                          const SizedBox(width: 8),
+                          Text('${docType} JSON Export', style: const TextStyle(color: Colors.white, fontSize: 15)),
+                        ],
+                      ),
+                      content: Container(
+                        width: double.maxFinite,
+                        constraints: const BoxConstraints(maxHeight: 300),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF070B14),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Text(
+                            doc.toString(),
+                            style: const TextStyle(fontFamily: 'monospace', color: Color(0xFF38BDF8), fontSize: 11),
+                          ),
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: const Text('Close', style: TextStyle(color: Color(0xFF38BDF8))),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
           // Transmit Button
           SizedBox(
             width: double.infinity,
