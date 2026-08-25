@@ -10,7 +10,10 @@
 ## 📌 Executive Overview
 In cross-border logistics across the Americas, customs brokers spend **30 to 45 minutes per shipment** manually re-keying data between commercial invoices, packing lists, national customs declarations (CBP Form 7501), and Central American transit documents (**DUCA-T**). A single typographical error in an HS code or tariff valuation can lead to delayed shipments, audits, and thousands of dollars in customs penalties.
 
-**All Things Logistics eliminates 100% of this manual paperwork keying** using Gemini 3.7 Flash and deterministic BigQuery tariff grounding, triggered instantly via our tactile Smart Button Grid.
+**All Things Logistics replaces manual paperwork with a 3-step frontline AI workflow**:
+1. Frontline operator selects the commodity / HS code via touch-friendly **Smart Chips** and enters the gross weight (e.g., `44,000 lbs`).
+2. Gemini 3.7 Flash and deterministic BigQuery tariff grounding calculate landed costs, tariff exemptions (**\$6,975 USD saved**), and regulatory compliance in $<45\text{ms}$.
+3. 1-tap synthesizes and transmits the sealed **Golden DUCA-T** with an asymmetric Ed25519 cryptographic token.
 
 ---
 
@@ -19,7 +22,7 @@ In cross-border logistics across the Americas, customs brokers spend **30 to 45 
 | Category | Traditional Paperwork Process | Fortified Swarm Automation |
 | :--- | :--- | :--- |
 | **Customs Transit Declaration** | 45 minutes manual typing of Central American **DUCA-T** & CBP 7501 forms. | **Zero-keying instant synthesis** of unified Golden Document with Ed25519 cryptographic seal. |
-| **Tariff Classification (HS Code)** | Manual lookup in 17,000-line harmonized tariff books; high risk of misclassification. | **Gemini 3.7 Flash autonomous classifier** resolves `0207.14.00` (Frozen poultry cuts) in $<45\text{ms}$. |
+| **Tariff Classification (HS Code)** | Manual lookup in 17,000-line harmonized tariff books; high risk of misclassification. | **Gemini 3.7 Flash autonomous classifier** matches `0207.14.00` (Frozen poultry cuts) in $<45\text{ms}$. |
 | **Tariff Valuation & Duty Savings** | Complex manual duty equations and free trade agreement rule checks. | **BigQuery deterministic truth gate** confirms 0% CAFTA-DR duty preference, saving **\$6,975 USD** in standard tariffs. |
 | **Landed Cost Breakdown** | Spreadsheet calculations for CIF value, insurance, freight, and port handling fees. | **Automated Landed Cost engine** calculates exact CIF valuation (\$46,500 USD) and fees in real time. |
 
@@ -31,43 +34,52 @@ In cross-border logistics across the Americas, customs brokers spend **30 to 45 
 sequenceDiagram
     autonumber
     actor Broker as T. Omas (Broker)
-    participant Grid as Tactile Smart Grid
-    participant Swarm as 12-Agent Swarm
-    participant BQ as BigQuery ds_customs
-    participant Doc as Golden Document
+    participant UI as Interactive AI Stepper
+    participant Swarm as 12-Agent Swarm (Gemini 3.7 Flash)
+    participant BQ as BigQuery Grounding Gate
+    participant Seal as Ed25519 Cryptographic Engine
 
-    Broker->>Grid: Tap [Cargo Manifest]
-    Grid->>Swarm: Retrieve Shipment Parameters (20T Frozen Poultry)
-    Broker->>Grid: Tap [Customs Clearance]
-    Swarm->>BQ: Query CAFTA-DR 0% Preferential Duty
-    BQ-->>Swarm: Confirm 0% Duty ($6,975 Saved) & Landed Cost $46,500
-    Broker->>Grid: Tap [Create BOL]
-    Swarm->>Doc: Synthesize DUCA-T + e-B/L + Ed25519 QR Seal
-    Doc-->>Broker: Golden Document Ready for Customs Transmission
+    Broker->>UI: Select Chip [0207.14.00 Poultry Cuts] & Type Weight [44,000 lbs]
+    Broker->>UI: Tap [RUN AI SWARM ORCHESTRATION]
+    UI->>Swarm: Autonomous Origin & Regulatory Parsing
+    Swarm->>BQ: Query CAFTA-DR 0% Preferential Duty Schedule
+    BQ-->>Swarm: Confirm 0% Tariff Rate (Saved $6,975) & CIF Landed Value $46,500
+    Swarm->>Seal: Asymmetric Key Signing (ed25519_sig_cbp_0207...)
+    Seal-->>UI: Display 2x2 Metric Grid & 1-Tap Golden DUCA-T Action
+    Broker->>UI: Tap [1-TAP SYNTHESIZE & TRANSMIT DUCA-T]
 ```
 
 ### Step 1: Open the Operations Dashboard
 1. Open [`https://logistics.campabadal.com`](https://logistics.campabadal.com).
-2. Ensure the top operator profile reads **T. Omas** *(Senior Customs Broker)* with the Campabadal Global organization badge.
+2. Ensure the top operator profile reads **T. Omas** *(Senior Customs Broker)* with the Campabadal Global organization pill.
 
-### Step 2: Tap `[Cargo Manifest]`
-* **Action**: Tap the green **`Cargo Manifest`** macro-tile on the $2\times 4$ grid.
-* **Result**: The swarm compiles all trade items (20,000 kg frozen poultry cuts from Miami to Guatemala via Tecún Umán border) into an active digital manifest token without manual keyboard data entry.
+### Step 2: Open the Multi-Step AI Demo
+* Tap the **`Customs Clearance`** (or `Create BOL` / `Cargo Manifest`) macro-tile on the $2\times 4$ grid.
+* The interactive **Multi-Step AI Demo Modal** opens inside the mobile simulator.
 
-### Step 3: Tap `[Customs Clearance]`
-* **Action**: Tap the purple **`Customs Clearance`** macro-tile.
-* **Result**: The valuation agent executes deterministic BigQuery tariff queries:
-  * Verifies **HS Code `0207.14.00`**.
-  * Applies **CAFTA-DR preferential trade agreement** (0% import duty vs. 15% standard MFN duty).
-  * Computes CIF Landed Cost: **\$46,500.00 USD** (Invoice: \$40,000 + Freight: \$5,000 + Insurance: \$1,500).
-  * Net duty saved: **\$6,975.00 USD**.
+### Step 3: Set Frontline Inputs (Zero Complex Typing)
+1. Under **1. Select HS Tariff Classification**, tap the smart chip: `[🍗 Frozen Poultry Cuts (0207.14.00)]`.
+2. Under **2. Enter Shipment Gross Weight**, type `44,000` (or tap the `44k lbs` quick-fill pill).
+3. Tap **`[RUN AI SWARM ORCHESTRATION]`**.
 
-### Step 4: Tap `[Create BOL]`
-* **Action**: Tap the red **`Create BOL`** macro-tile.
-* **Result**: Opens the **`Cargo Manifest & Customs Docs`** modal displaying:
-  * The synthesized electronic Bill of Lading (`e-B/L`).
-  * The Central American transit manifest reference (`DUCA-T-GT-2026-9921`).
-  * The **Ed25519 digital signature** and roadside inspector QR code.
+### Step 4: Observe AI Swarm Real-Time Telemetry
+* Watch Gemini 3.7 Flash and the BigQuery Deterministic Gate execute in real time:
+  - Regulatory classification & origin parsing.
+  - CAFTA-DR 0% preferential tariff confirmation.
+  - Model Armor PII redaction and sanitization.
+  - Ed25519 cryptographic token synthesis (`97.7% prompt token reduction`).
+
+### Step 5: Verify the 2x2 Outcome & Seal Deliverable
+* Inspect the calculated $2\times 2$ metrics:
+  - **HS Code**: `0207.14.00` *(VERIFIED)*
+  - **Tariff Rate**: `0.00% (CAFTA-DR)` *(DUTY FREE)*
+  - **CIF Landed Value**: `\$46,500.00 USD`
+  - **Net Tariff Saved**: `+\$6,975.00 USD`
+* Tap **`[1-TAP SYNTHESIZE & TRANSMIT DUCA-T]`** to seal the Golden Document.
+
+### 🚧 Non-Demo Features Notice
+* Tapping non-demo buttons (`Inventory Lookup`, `Schedule Pickup`, `Warehouse Entry`) displays an in-frame notice:
+  > *"This part isn't fully programmed yet. Please refer to the demo guide for this company: docs/demos/DEMO_1_CAMPABADAL_3PL_BROKERAGE.md"* with a 1-tap shortcut to launch the active demo.
 
 ---
 

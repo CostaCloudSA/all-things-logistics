@@ -44,12 +44,12 @@ graph TD
 
 ## ⚡ 1-Minute Evaluation Matrix (Paperwork & Operational Variables Automated)
 
-| Company Persona | Logistics Role & User | Paperwork & Variable Friction Eliminated | 1-Tap Working Demo on Live Site |
+| Company Persona | Logistics Role & User | Paperwork & Variable Friction Eliminated | 3-Step Interactive AI Demo on Live Site |
 | :--- | :--- | :--- | :--- |
-| **Campabadal Global**<br>*(#0284C7 Blue)* | **3PL Freight Forwarder**<br>**T. Omas** *(Senior Broker)* | **45-min manual re-typing** of DUCA-T transit declarations, CBP Form 7501, and commercial invoices. | Tap `[Cargo Manifest]` $\to$ `[Customs Clearance]` $\to$ `[Create BOL]` to synthesize Golden Document & claim \$6,975 in CAFTA-DR duties. |
-| **Transportes Tomas**<br>*(#DC2626 Red)* | **Cross-Border Carrier**<br>**Tomas R.** *(Safety Director)* | Paper roadside transit logs, physical border passes, and illegal foreign cabotage transit bans. | Switch to Tomas in Profile $\to$ Tap `[Cabotage Relay Match]` (matches tractors in $<90$s) $\to$ `[Weigh Scale Gate Pre-Pass]` (skips 4h queue). |
-| **Agroexport Costa Rica**<br>*(#059669 Green)* | **Produce Shipper**<br>**Elena M.** *(Export Director)* | **20% foreign tax withholding leakage** (\$5,000/container), paper phytosanitary permits, and port cold-chain spoilage. | Switch to Agroexport $\to$ Tap `[20% Tax Shield]` (saves **\$4,250 USD net cash** via DTA Article 7) $\to$ `[Moín Reefer Gate Pass]`. |
-| **Naviera Don Jorge**<br>*(#1E3A8A Navy)* | **Ocean Carrier & Port**<br>**Cap. Jorge B.** *(Marine Super)* | **\$150/day container demurrage fines**, paper Master B/L courier delays, and manual gate interchange slips (EIR). | Switch to Naviera $\to$ Tap `[48h Demurrage Early Warning]` $\to$ `[1-Tap Dispatch Gate Pass]` (saves \$150/d) $\to$ `[e-B/L Master Release]`. |
+| **Campabadal Global**<br>*(#0284C7 Blue)* | **3PL Freight Forwarder**<br>**T. Omas** *(Senior Broker)* | **45-min manual re-typing** of DUCA-T transit declarations, CBP Form 7501, and commercial invoices. | Select HS Code Chip (`0207.14.00 Poultry`) + Type `44,000` lbs $\to$ Gemini + BigQuery confirm 0% CAFTA-DR duty saving **\$6,975 USD** $\to$ 1-Tap Golden DUCA-T synthesis with Ed25519 seal. |
+| **Transportes Tomas**<br>*(#DC2626 Red)* | **Cross-Border Carrier**<br>**T. Tomas** *(Fleet Dispatcher)* | Axle overload citations (\$500–\$2,500), 4h scale queues, and illegal foreign cabotage transit bans. | Select Corridor Chip (`Tecún Umán`) + Type scale weight `35,200` lbs $\to$ AI Bridge Formula auditor detects +1.2k lbs overload, calculates 48" cargo shift, matches tractor `GUA-TRK-4912` $\to$ 1-Tap dispatch & driver WhatsApp. |
+| **Agroexport Costa Rica**<br>*(#059669 Green)* | **Produce Shipper**<br>**V. Solis** *(Export Director)* | **20% foreign tax withholding leakage** (\$4,250/container), paper phytosanitary permits, and port reefer spoilage. | Select Produce Chip (`MD-2 Pineapple`) + Type `1,600` boxes & `+4.5°C` $\to$ AI applies Article 7 DTA treaty (**+\$4,250 USD net cash saved**) & validates MAG/USDA phyto $\to$ 1-Tap claim tax shield & issue Moín gate pass. |
+| **Naviera Don Jorge**<br>*(#1E3A8A Navy)* | **Ocean Carrier & Port**<br>**Cap. C. Jorge** *(Port Captain)* | **\$150/day container demurrage fines**, paper Master B/L courier delays, and vessel list instability. | Select Bay Position Chip (`Bay 04 Underdeck`) + Type `42` dwell hrs $\to$ AI flags 6h window to avoid \$150/d fine, 3D Ballast computes $GM=1.42\text{m}$ ($>0.15\text{m}$) $\to$ 1-Tap issue terminal gate pass & release Master e-B/L. |
 
 ---
 
@@ -99,23 +99,30 @@ In production logistics, querying massive tariff schedules (over 17,000 subheadi
 
 ## 📱 Step-by-Step Live Demo Walkthroughs (Individual Guides)
 
-Click any of the dedicated evaluation guides below for full screenshots, sequence diagrams, and detailed scripts:
+Click any of the dedicated evaluation guides below for full sequence diagrams, inputs, and business impact:
 
 ### 🚢 [Demo 1: Campabadal Global Logistics (3PL Customs Brokerage)](demos/DEMO_1_CAMPABADAL_3PL_BROKERAGE.md)
 * **Goal**: Eliminate 45-minute manual DUCA-T keying and automate CAFTA-DR duty preferences.
-* **Quick Script**: Tap `[Cargo Manifest]` $\to$ tap `[Customs Clearance]` (computes \$46,500 CIF landed cost & confirms 0% duty saving \$6,975) $\to$ tap `[Create BOL]` to synthesize the Ed25519-signed Golden Document.
+* **Flow**: Select HS Code Chip (`0207.14.00 Poultry`) + Type `44,000` lbs $\to$ Tap `[RUN AI SWARM ORCHESTRATION]` (calculates \$46,500 CIF value & confirms 0% duty saving \$6,975) $\to$ Tap `[1-TAP SYNTHESIZE & TRANSMIT DUCA-T]`.
 
 ### 🚛 [Demo 2: Transportes Tomas (Cross-Border Motor Carrier)](demos/DEMO_2_TRANSPORTES_TOMAS_MOTOR_CARRIER.md)
-* **Goal**: Automate cross-border cabotage tractor matching in $<90$s and bypass 4-hour weigh scale queues.
-* **Quick Script**: Switch to Transportes Tomas in Profile $\to$ tap `[Cabotage Relay Match]` (pairs Mexican tractor `MX-9942` with Guatemalan tractor `GT-8812`) $\to$ tap `[Weigh Scale Gate Pre-Pass]` (Green Lane approved) $\to$ tap `[Driver WhatsApp Push]`.
+* **Goal**: Automate cross-border cabotage tractor matching in $<90$s and resolve axle overloads.
+* **Flow**: Switch to Transportes Tomas in Profile $\to$ Select Corridor Chip (`Tecún Umán`) + Type scale weight `35,200` lbs $\to$ Tap `[AUDIT AXLES & MATCH CABOTAGE RELAY]` (detects 1.2k lbs overload, calculates 48" shift, pairs `GUA-TRK-4912`) $\to$ Tap `[DISPATCH TRACTOR RELAY & PUSH WHATSAPP]`.
 
 ### 🍍 [Demo 3: Agroexport Costa Rica (Enterprise Produce Shipper)](demos/DEMO_3_AGROEXPORT_CR_PRODUCE_SHIPPER.md)
 * **Goal**: Shield 20% foreign tax withholding cash leakage (\$4,250 USD saved per container) and eliminate perishable reefer gate delays.
-* **Quick Script**: Switch to Agroexport in Profile $\to$ tap `[20% Tax Shield (Save $4,250)]` (verifies DTA Certificate `CR-DGT-CERT-2026-9912` under Article 7) $\to$ tap `[Phytosanitary USDA/MAG Permit]` $\to$ tap `[Moín Terminal Reefer Gate Pass]`.
+* **Flow**: Switch to Agroexport in Profile $\to$ Select Produce Chip (`MD-2 Pineapple`) + Type `1,600` boxes & `+4.5°C` $\to$ Tap `[APPLY DTA TAX SHIELD & PHYTO PERMIT]` (saves **\$4,250 USD net cash** via DTA Article 7 & clears USDA/MAG phyto) $\to$ Tap `[CLAIM $4,250 TAX SHIELD & ISSUE GATE PASS]`.
 
 ### ⚓ [Demo 4: Naviera Don Jorge (Ocean Carrier & Port Terminal)](demos/DEMO_4_NAVIERA_DON_JORGE_OCEAN_LINE.md)
-* **Goal**: Prevent \$150/day container demurrage fines and release Master Bills of Lading in $<1$ second.
-* **Quick Script**: Switch to Naviera Don Jorge in Profile $\to$ tap `[48h Demurrage Early Warning]` (identifies 18h dwell at PortMiami) $\to$ tap `[1-Tap Dispatch Gate Pass]` (saves \$150/day) $\to$ tap `[e-B/L Master Customs Release]`.
+* **Goal**: Prevent \$150/day container demurrage fines and release Master Bills of Lading with verified IMO stability.
+* **Flow**: Switch to Naviera Don Jorge in Profile $\to$ Select Bay Position Chip (`Bay 04 Underdeck`) + Type `42` dwell hrs $\to$ Tap `[PREDICT DEMURRAGE & AUDIT BALLAST]` (identifies 6h window to avoid \$150/day fine, confirms $GM=1.42\text{m}$) $\to$ Tap `[1-TAP DISPATCH GATE PASS & RELEASE e-B/L]`.
+
+---
+
+## 🚧 Non-Demo Features Behavior
+When clicking any non-demo button on any persona's tactile macro-grid, the app renders a clean in-frame sheet:
+> *"This part isn't fully programmed yet. Please refer to the demo guide for this company:"*  
+> Linking directly to that specific company's `.md` file, accompanied by a 1-tap **`[Launch Working Multi-Step Demo]`** shortcut button.
 
 ---
 

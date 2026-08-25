@@ -25,6 +25,8 @@ import '../widgets/vessel_stability_card.dart';
 import '../widgets/tax_shield_card.dart';
 import '../widgets/demurrage_alert_card.dart';
 import '../widgets/tactile_modal_card.dart';
+import '../widgets/interactive_ai_demo_modal.dart';
+import '../widgets/under_construction_modal.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -112,175 +114,157 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   void _onOperationActionSelected(String actionId, String title) {
     switch (actionId) {
-      // Shared / General Actions
-      case 'scan_qr':
-        _tabController.animateTo(3); // Security & Settings Tab
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFF2563EB),
-            content: Row(
-              children: [
-                Icon(Icons.qr_code_scanner, color: Colors.white, size: 20),
-                SizedBox(width: 10),
-                Expanded(child: Text('Roadside Offline QR Inspector: Ed25519 Verified Untampered.')),
-              ],
-            ),
-            duration: Duration(seconds: 3),
-          ),
-        );
-        break;
-
-      case 'cargo_manifest':
-        _showGoldenDocumentModal();
-        break;
-
-      case 'track_shipments':
-        _tabController.animateTo(1); // Fleet Tab
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFFEA580C),
-            content: Row(
-              children: [
-                Icon(Icons.local_shipping_rounded, color: Colors.white, size: 20),
-                SizedBox(width: 10),
-                Expanded(child: Text('24/7 Night-Watch Geofence: Active GPS and WhatsApp telemetry.')),
-              ],
-            ),
-            duration: Duration(seconds: 3),
-          ),
-        );
-        break;
-
-      // Campabadal 3PL Actions
-      case 'inventory_lookup':
-        _textController.text = 'Lookup inventory SKU and verify HS customs tariff classification for bonded reefer cargo';
-        _executeTradeQuery(_textController.text);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFF0D9488),
-            content: Row(
-              children: [
-                Icon(Icons.inventory_2_rounded, color: Colors.white, size: 20),
-                SizedBox(width: 10),
-                Expanded(child: Text('Inventory Lookup: BigQuery Data Mesh SKU schedule queried.')),
-              ],
-            ),
-            duration: Duration(seconds: 3),
-          ),
-        );
-        break;
-
-      case 'create_bol':
-        _textController.text = 'Create electronic Bill of Lading (e-B/L) and export DUCA-T manifest for 20T refrigerated freight';
-        _executeTradeQuery(_textController.text);
-        _showGoldenDocumentModal();
-        break;
-
+      // -----------------------------------------------------------------------
+      // 1. CAMPABADAL GLOBAL 3PL ACTIONS
+      // -----------------------------------------------------------------------
       case 'customs_clearance':
-        _showCustomsClearanceModal();
+      case 'create_bol':
+      case 'cargo_manifest':
+      case 'scan_qr':
+        _showAiDemoModal(AiDemoType.campabadalPoultry);
         break;
 
+      case 'inventory_lookup':
+      case 'track_shipments':
       case 'schedule_pickup':
-        _showCabotageRelayModal();
-        break;
-
       case 'warehouse_entry':
-        _showAxleModal();
+        _showUnderConstructionModal(title, 'tenant-campabadal');
         break;
 
-      // Transportes Tomas Motor Carrier Actions
+      // -----------------------------------------------------------------------
+      // 2. TRANSPORTES TOMAS MOTOR CARRIER ACTIONS
+      // -----------------------------------------------------------------------
       case 'audit_axle_load':
-        _showAxleModal();
-        break;
-
       case 'cabotage_relay':
-        _showCabotageRelayModal();
-        break;
-
       case 'gate_pre_pass':
-        _showGatePrePassModal();
-        break;
-
       case 'driver_whatsapp':
-        _showDriverWhatsAppModal();
+        _showAiDemoModal(AiDemoType.tomasCabotageAxle);
         break;
 
+      case 'duca_transit':
+      case 'fleet_gps':
       case 'dot_safety':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFFEAB308),
-            content: Text('DOT Safety Pre-Trip: Brakes, tires, and lights certified compliant.'),
-          ),
-        );
+      case 'police_qr':
+        _showUnderConstructionModal(title, 'tenant-tomas');
         break;
 
-      // Agroexport Costa Rica Produce Shipper Actions
+      // -----------------------------------------------------------------------
+      // 3. AGROEXPORT COSTA RICA PRODUCE SHIPPER ACTIONS
+      // -----------------------------------------------------------------------
       case 'tax_shield':
-        _showTaxShieldModal();
-        break;
-
       case 'phyto_permit':
-        _showPhytoPermitModal();
+      case 'gate_release':
+        _showAiDemoModal(AiDemoType.agroexportTaxShield);
         break;
 
       case 'cold_chain':
-        _tabController.animateTo(1);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFF0EA5E9),
-            content: Text('Controlled Atmosphere Reefer: +4.5°C verified, O2 3.1%, CO2 9.8%.'),
-          ),
-        );
-        break;
-
-      case 'gate_release':
-        _showMoinTerminalGateModal();
-        break;
-
+      case 'export_duca':
+      case 'cafta_schedule':
+      case 'phyto_stamp':
       case 'traceability':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFFEA580C),
-            content: Text('Traceability Pass: Farm harvest batch CR-PIN-2026-08 verified.'),
-          ),
-        );
+        _showUnderConstructionModal(title, 'tenant-agroexport-cr');
         break;
 
-      // Naviera Don Jorge Ocean Carrier Actions
+      // -----------------------------------------------------------------------
+      // 4. NAVIERA DON JORGE OCEAN CARRIER ACTIONS
+      // -----------------------------------------------------------------------
       case 'vessel_stability':
-        _showVesselStabilityModal();
-        break;
-
       case 'demurrage_alert':
-        _showDemurrageModal();
-        break;
-
       case 'ebl_release':
-        _showEblReleaseModal();
-        break;
-
       case 'gate_pass':
-        _showDemurrageModal();
+        _showAiDemoModal(AiDemoType.navieraDemurrageBallast);
         break;
 
       case 'imo_hazmat':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFFEF4444),
-            content: Text('IMO Dangerous Goods: Stowage segregation compliant under IMDG Code.'),
-          ),
-        );
+      case 'berth_schedule':
+      case 'ais_telematics':
+      case 'port_police_qr':
+        _showUnderConstructionModal(title, 'tenant-naviera-don-jorge');
         break;
 
-      case 'berth_schedule':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Color(0xFF7C3AED),
-            content: Text('Berth Scheduling: PortMiami Berth 4 window locked for 06:00 arrival.'),
-          ),
-        );
+      default:
+        _showUnderConstructionModal(title, _activeTenantId);
         break;
     }
+  }
+
+  void _showAiDemoModal(AiDemoType demoType) {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: false,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: InteractiveAiDemoModal(
+            demoType: demoType,
+            onComplete: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: Color(0xFF10B981),
+                  content: Row(
+                    children: [
+                      Icon(Icons.verified, color: Colors.white, size: 20),
+                      SizedBox(width: 10),
+                      Expanded(child: Text('AI Swarm Orchestration Completed & Sealed with Ed25519!')),
+                    ],
+                  ),
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void _showUnderConstructionModal(String featureName, String tenantId) {
+    String guideTitle;
+    String guideFileName;
+    AiDemoType fallbackDemo;
+
+    switch (tenantId) {
+      case 'tenant-tomas':
+        guideTitle = 'Transportes Tomas: Cross-Border Cabotage & Bridge Formula Demo';
+        guideFileName = 'DEMO_2_TRANSPORTES_TOMAS_MOTOR_CARRIER.md';
+        fallbackDemo = AiDemoType.tomasCabotageAxle;
+        break;
+      case 'tenant-agroexport-cr':
+        guideTitle = 'Agroexport Costa Rica: DTA 20% Tax Shield & Produce Export Demo';
+        guideFileName = 'DEMO_3_AGROEXPORT_CR_PRODUCE_SHIPPER.md';
+        fallbackDemo = AiDemoType.agroexportTaxShield;
+        break;
+      case 'tenant-naviera-don-jorge':
+        guideTitle = 'Naviera Don Jorge: 48h Demurrage Shield & Vessel Stability Demo';
+        guideFileName = 'DEMO_4_NAVIERA_DON_JORGE_OCEAN_LINE.md';
+        fallbackDemo = AiDemoType.navieraDemurrageBallast;
+        break;
+      case 'tenant-campabadal':
+      default:
+        guideTitle = 'Campabadal Global: 3PL Customs Brokerage & Poultry CAFTA-DR Demo';
+        guideFileName = 'DEMO_1_CAMPABADAL_3PL_BROKERAGE.md';
+        fallbackDemo = AiDemoType.campabadalPoultry;
+        break;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: false,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return UnderConstructionModal(
+          companyName: _getCompanyTitle(),
+          brandColor: _getBrandColor(),
+          featureName: featureName,
+          demoGuideTitle: guideTitle,
+          demoGuideFileName: guideFileName,
+          onLaunchActiveDemo: () => _showAiDemoModal(fallbackDemo),
+        );
+      },
+    );
   }
 
   void _showGoldenDocumentModal() {

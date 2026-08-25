@@ -1,29 +1,32 @@
-# Demo 4: Naviera Don Jorge — 48h Demurrage Early Warning & Automated e-B/L Master Release
+# Demo 4: Naviera Don Jorge — 48-Hour Demurrage Early Warning Shield & 3D Vessel Hydrostatic Stability
 
 **Live URL**: [https://logistics.campabadal.com](https://logistics.campabadal.com)  
-**Enterprise Persona**: Naviera Don Jorge (Ocean Carrier & Marine Port Terminal Operator)  
-**Active Operator**: **Cap. Jorge B.** *(Marine Superintendent & Port Terminal Coordinator)*  
-**Brand Accent Color**: Navy Blue (`#1E3A8A`) / Maritime Gold (`#F59E0B`)
+**Enterprise Persona**: Naviera Don Jorge (Short-Sea Container Feeder & Caribbean Ocean Carrier)  
+**Active Operator**: **C. Jorge** *(Port Captain & Vessel Operations Superintendent)*  
+**Brand Accent Color**: Deep Maritime Navy / Gold (`#1E3A8A` / `#F59E0B`)
 
 ---
 
 ## 📌 Executive Overview
-Marine terminal operators and ocean feeder lines manage thousands of shipping containers in port yards. Two major operational bottlenecks generate significant financial losses:
-1. **Unnecessary Demurrage Penalties**: Inbound import containers routinely exceed their 48-hour free dwell window in port container yards because drayage truckers are not notified in time, resulting in **\$150.00 to \$300.00 per day in demurrage penalty fines**.
-2. **Paper Master Bill of Lading Holds**: Releasing cargo from customs and port gates requires physical, stamped original paper Bills of Lading, causing delays of 24 to 48 hours while documents are couriered between offices.
+Maritime feeder operations in the Caribbean and Central America face two severe operational risks:
+1. **Demurrage & Detention Penalties**: At busy ports like PortMiami and Puerto Cortés, ocean carriers and consignees face detention and demurrage fines of **\$150 to \$300/day per container** if equipment exceeds the 48-hour free-time window.
+2. **Vessel Hydrostatic Instability**: Improper bay weight distribution can degrade the vessel's transverse metacentric height ($GM$) below the **IMO Intact Stability Standard** ($GM \ge 0.15\text{m}$), threatening maritime safety and port clearance.
 
-**All Things Logistics provides a 48-Hour Demurrage Early Warning sentinel that auto-dispatches Ed25519-signed gate passes to avoid \$150/day penalties**, and transmits cryptographic **e-B/L Master Releases** directly to CBP customs and marine terminal gates with zero paper couriers.
+**All Things Logistics automates this ocean operations chain in 3 steps**:
+1. Port Captain selects the container vessel bay position via **Smart Chips** and enters current container port dwell time (e.g. `42 hours`).
+2. Gemini 3.7 Flash and the BigQuery hydrodynamic engine detect the impending 48h demurrage cliff (6h remaining), compute 3D ballast water adjustment ($GM = 1.42\text{m}$, list $0.0^\circ$), and authorize Master electronic Bill of Lading (`e-B/L`) release.
+3. 1-tap dispatches the terminal gate pass and releases the Master e-B/L.
 
 ---
 
 ## 📄 Paperwork Eliminated & Operational Variables Automated
 
-| Category | Traditional Paperwork Process | Fortified Swarm Automation |
+| Operational Friction | Traditional Maritime Process | Fortified Swarm Automation |
 | :--- | :--- | :--- |
-| **Container Yard Demurrage** | Inactive yard tracking spreadsheets; late discovery after \$150/day detention penalties trigger. | **48h Demurrage Early Warning Sentinel** monitors dwell time (18h/48h free time) and **1-tap dispatches pre-cleared gate passes to truckers**, avoiding \$150/day fines. |
-| **Master Bill of Lading Release** | Physical courier of stamped original paper Master B/L documents to port authorities and CBP customs. | **Cryptographic e-B/L Master Release** transmits digital release token with Ed25519 non-repudiation signature in $<1$ second. |
-| **Terminal Gate Interchange (EIR)** | Paper equipment interchange receipts (EIR) stamped manually at terminal security booths. | **Digital Ed25519 Gate Pass (`NDJ-GATE-2026-8812`)** scanned optically at gate optical cameras with zero physical handling. |
-| **Berth Window Docking** | Manual phone/email negotiation with harbor masters and terminal pilots for dock availability. | **Berth 4 Auto-Scheduler** locks arrival windows coordinated with tidal windows and crane gantry availability. |
+| **Demurrage Fine Tracking** | Manual spreadsheet reconciliation of terminal timestamps; high late-fee leakage. | **Demurrage Predictor** flags 42h dwell time, preventing **\$150/day** statutory port fines. |
+| **Vessel Stability & Trim Calculation** | Manual hydrostatic tables and separate naval architecture software. | **Deterministic 3D Stability Engine** calculates $GM = 1.42\text{m}$ ($>0.15\text{m}$ IMO standard) in real time. |
+| **Master Bill of Lading Release** | Physical courier and wet-ink signing of 3 original Master Ocean B/Ls. | **Cryptographic e-B/L Release** with Ed25519 signature and instant customs transmission. |
+| **Terminal Gate Pass Scheduling** | Fragmented terminal portal logins and manual gate appointment slips. | **Automated Port Gate Pass** synthesized with QR code for immediate container pickup. |
 
 ---
 
@@ -32,48 +35,58 @@ Marine terminal operators and ocean feeder lines manage thousands of shipping co
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Super as Cap. Jorge B. (Superintendent)
-    participant Grid as Tactile Smart Grid
-    participant Sentinel as Demurrage Sentinel Agent
-    participant Drayage as Motor Carrier WhatsApp
-    participant Customs as CBP & Marine Terminal Gate
+    actor Captain as C. Jorge (Port Captain)
+    participant UI as Interactive AI Stepper
+    participant Swarm as 12-Agent Swarm (Gemini 3.7 Flash)
+    participant BQ as BigQuery Marine Hydrostatic Engine
+    participant Port as PortMiami Terminal Gate API
 
-    Super->>Grid: Tap [48h Demurrage Early Warning]
-    Grid->>Sentinel: Check PortMiami Yard Dwell (Container MSCU-884219)
-    Sentinel-->>Super: Alert: 18h / 48h Elapsed (30h Free Time Remaining)
-    Super->>Grid: Tap [1-Tap Dispatch Gate Pass]
-    Grid->>Drayage: Dispatch Signed Gate Pass NDJ-GATE-2026-8812
-    Drayage-->>Super: Trucker Dispatched (Save $150.00/Day Demurrage Fine)
-    Super->>Grid: Tap [e-B/L Master Customs Release]
-    Grid->>Customs: Transmit Ed25519 Electronic B/L Token
-    Customs-->>Super: Terminal Cargo Hold Released Instantly
+    Captain->>UI: Select Bay [Bay 04 Underdeck] + Dwell Time [42 hrs]
+    Captain->>UI: Tap [PREDICT DEMURRAGE & AUDIT BALLAST]
+    UI->>Swarm: Autonomous Demurrage Horizon & Hydrostatic Balance
+    Swarm->>BQ: Compute 48h Free-Time Horizon + IMO Metacentric Height (GM)
+    BQ-->>Swarm: Confirm 6h Demurrage Window ($150/d Saved) + GM=1.42m List=0.0°
+    Swarm-->>UI: Display 2x2 Metric Grid & Action Deliverable
+    Captain->>UI: Tap [1-TAP DISPATCH GATE PASS & RELEASE e-B/L]
+    UI->>Port: Authorize Terminal Release & Transmit Ed25519 e-B/L
 ```
 
-### Step 1: Switch to the Naviera Don Jorge Persona
+### Step 1: Switch Profile to Naviera Don Jorge
 1. Open [`https://logistics.campabadal.com`](https://logistics.campabadal.com).
-2. Open the top navigation drawer (`≡`) or go to the **Profile** tab and select **Naviera Don Jorge**.
-3. Notice the UI theme dynamically updates to **Navy Blue (`#1E3A8A`)** and the operator profile changes to **Cap. Jorge B.** *(Marine Superintendent)* with ID `IMO-CAPT-992140`.
+2. In the top profile bar, select **Naviera Don Jorge** (`C. Jorge - Port Captain`).
+3. Notice the UI accent transforms to Deep Maritime Navy with maritime ballast and port tiles.
 
-### Step 2: Tap `[48h Demurrage Early Warning]`
-* **Action**: Tap the golden amber **`48h Demurrage Early Warning`** macro-tile on the $2\times 4$ grid.
-* **Result**: Opens the interactive **48-Hour Demurrage Early Warning Modal**:
-  * Location: PortMiami Container Yard (Gate 4).
-  * Yard Dwell Time: **18h elapsed / 48h free time window** (30 hours remaining).
-  * Penalty Rate: **\$150.00 / day**.
-  * Pre-Clearance Gate Pass Status: Prepared and ready for dispatch.
+### Step 2: Open the Multi-Step Maritime AI Demo
+* Tap the **`3D Ballast & IMO Stability`** (or `48h Demurrage Early Warning` / `e-B/L Master Customs Release` / `PortMiami Gate Pass`) macro-tile on the $2\times 4$ grid.
+* The interactive **Multi-Step AI Demo Modal** opens inside the mobile simulator.
 
-### Step 3: Tap `[1-Tap Dispatch Gate Pass (Save $150/Day)]`
-* **Action**: Click the golden action button inside the Demurrage Card.
-* **Result**: Generates and dispatches Ed25519-signed gate pass `NDJ-GATE-2026-8812` directly to the drayage motor carrier via WhatsApp. The driver enters the green lane and retrieves the container before free time expires, **saving \$150.00/day in penalty fees**.
+### Step 3: Set Frontline Operational Inputs
+1. Under **1. Select Vessel Cargo Bay Position**, tap: `[Bay 04 Underdeck Reefer]`.
+2. Under **2. Enter Port Container Dwell Time**, enter `42` hours (or tap `42 hrs (Warning)`).
+3. Tap **`[PREDICT DEMURRAGE & AUDIT BALLAST]`**.
 
-### Step 4: Tap `[e-B/L Master Customs Release]`
-* **Action**: Tap the vibrant green **`e-B/L Master Customs Release`** macro-tile on the grid.
-* **Result**: Electronically transmits the master electronic Bill of Lading release token directly to CBP customs and marine terminal operating systems, releasing cargo holds with zero physical paper courier delays.
+### Step 4: Observe AI Swarm Real-Time Telemetry
+* Watch the swarm execute:
+  - Demurrage Free-Time Horizon analysis (flags 6 hours before \$150/day fee triggers).
+  - IMO Resolution A.749(18) intact stability calculation ($GM = 1.42\text{m}$, list $0.0^\circ$).
+  - Autonomous Master e-B/L customs clearance validation.
+  - Ed25519 cryptographic token synthesis.
+
+### Step 5: Verify the 2x2 Outcome & Release
+* Inspect the calculated $2\times 2$ metrics:
+  - **Demurrage Risk**: `CRITICAL (6h Left)` *(48H LIMIT)*
+  - **Fine Prevented**: `+\$150/Day Saved`
+  - **Ballast Stability**: `GM = 1.42m (List 0.0°)` *(IMO SAFE)*
+  - **Master B/L**: `e-B/L AUTHORIZED`
+* Tap **`[1-TAP DISPATCH GATE PASS & RELEASE e-B/L]`** to finalize the release.
+
+### 🚧 Non-Demo Features Notice
+* Tapping non-demo buttons (`IMO Dangerous Goods`, `Berth 4 Docking`, `AIS Marine Telematics`) displays an in-frame notice:
+  > *"This part isn't fully programmed yet. Please refer to the demo guide for this company: docs/demos/DEMO_4_NAVIERA_DON_JORGE_OCEAN_LINE.md"* with a 1-tap shortcut to launch the active demo.
 
 ---
 
 ## 💰 Measurable Business Impact & ROI
-* **Demurrage Cost Avoidance**: **100% elimination of late gate demurrage penalties** (\$150 to \$300/day per container).
-* **Terminal Turnaround**: Cargo released from marine terminals **24 to 48 hours faster** by replacing physical paper Bills of Lading with cryptographic e-B/L tokens.
-* **Paperwork Reduction**: Complete elimination of physical Equipment Interchange Receipts (EIR) and paper release vouchers.
-* **Operational Fluidity**: Seamless coordination between marine terminal operators, ocean feeder lines, and drayage motor carriers.
+* **Demurrage Prevention**: Eliminates **\$150–\$300 per day per container** in terminal storage fines.
+* **Maritime Safety Assurance**: 100% compliance with IMO intact stability standards prior to vessel departure.
+* **Turnaround Speed**: Instant digital release of Master Ocean Bills of Lading saves **1 to 2 business days** in paperwork transit.
