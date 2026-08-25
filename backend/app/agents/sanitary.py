@@ -46,7 +46,7 @@ class SanitaryRegulatoryAgent(BaseAgent):
             ca_telemetry = {
                 "target_o2_pct": 3.0, # 3% Oxygen (low respiration)
                 "target_co2_pct": 5.0, # 5% Carbon Dioxide
-                "temp_setpoint_celsius": -18.0 if any("frozen" in (i.description or "").lower() for i in items) else 4.0,
+                "temp_setpoint_celsius": -18.0 if any("frozen" in (getattr(i, "raw_description", "") or getattr(i, "refined_description", "") or "").lower() for i in items) else 4.0,
                 "gas_injection_seal_status": "CONTROLLED_ATMOSPHERE_ACTIVE"
             }
 

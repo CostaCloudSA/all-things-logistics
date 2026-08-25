@@ -82,8 +82,14 @@ class DeviceFrameWrapper extends StatelessWidget {
                               ],
                             ),
                           ),
-                          // The Embedded Mobile App
-                          Expanded(child: child),
+                          // The Embedded Mobile App (Constrained with Local Navigator for in-frame popups & bottom sheets)
+                          Expanded(
+                            child: Navigator(
+                              onGenerateRoute: (settings) => MaterialPageRoute(
+                                builder: (nestedContext) => child,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

@@ -11,7 +11,7 @@ class NightWatchStatusCard extends StatelessWidget {
     this.status = 'ACTIVE_NORMAL',
     this.geofence = 'Patio Fiscal Tecún Umán (Guatemala)',
     this.adherencePct = 99.2,
-    this.whatsappMessage = '🟢 *Night-Watch Update*: TRK-9842 verified at Patio Fiscal Tecún Umán. Route adherence: 99.2%. ETA: 14:30 UTC.',
+    this.whatsappMessage = 'Night-Watch Update: TRK-9842 verified at Patio Fiscal Tecún Umán. Route adherence: 99.2%. ETA: 14:30 UTC.',
   }) : super(key: key);
 
   @override

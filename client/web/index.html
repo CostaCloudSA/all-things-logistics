@@ -8,7 +8,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <title>Campabadal Global Logistics | Fortified Enterprise Fleet</title>
-  <link rel="manifest" href="manifest.json">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (var i = 0; i < registrations.length; i++) {
+          registrations[i].unregister();
+        }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        for (var i = 0; i < names.length; i++) {
+          caches.delete(names[i]);
+        }
+      });
+    }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -20,7 +37,7 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #0a0f1d;
+      background-color: #070B14;
       color: #f8fafc;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       overflow: hidden;
@@ -32,7 +49,7 @@
       justify-content: center;
       height: 100vh;
       width: 100vw;
-      background: #0a0f1d;
+      background: #070B14;
       transition: opacity 0.3s ease-out;
       z-index: 99999;
       position: fixed;
@@ -40,19 +57,19 @@
       left: 0;
     }
     .spinner {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border: 3px solid rgba(56, 189, 248, 0.15);
-      border-top-color: #38bdf8;
+      border-top-color: #0284C7;
       border-radius: 50%;
       animation: spin 0.75s linear infinite;
     }
     .title-text {
-      margin-top: 16px;
+      margin-top: 18px;
       font-weight: 800;
-      font-size: 13px;
-      letter-spacing: 1px;
-      color: #38bdf8;
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      color: #38BDF8;
       text-transform: uppercase;
     }
     .sub-text {
@@ -60,7 +77,7 @@
       font-weight: 500;
       font-size: 11px;
       letter-spacing: 0.5px;
-      color: #94a3b8;
+      color: #94A3B8;
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
@@ -71,41 +88,9 @@
   <div id="loading-container">
     <div class="spinner"></div>
     <div class="title-text">Campabadal Global Logistics</div>
-    <div class="sub-text">Initializing Fortified Enterprise Multi-Agent Swarm...</div>
+    <div class="sub-text">Loading Multi-Device Operations Hub...</div>
   </div>
 
-  <script src="flutter.js" defer></script>
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js and initialize engine
-      if (window._flutter && window._flutter.loader) {
-        _flutter.loader.loadEntrypoint({
-          serviceWorker: {
-            serviceWorkerVersion: {{flutter_service_worker_version}},
-          },
-          onEntrypointLoaded: function(engineInitializer) {
-            engineInitializer.initializeEngine().then(function(appRunner) {
-              var loader = document.getElementById('loading-container');
-              if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(function() {
-                  if (loader && loader.parentNode) {
-                    loader.parentNode.removeChild(loader);
-                  }
-                }, 300);
-              }
-              appRunner.runApp();
-            });
-          }
-        });
-      } else {
-        // Fallback for direct script loading
-        var script = document.createElement('script');
-        script.src = 'main.dart.js';
-        script.type = 'application/javascript';
-        document.body.appendChild(script);
-      }
-    });
-  </script>
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

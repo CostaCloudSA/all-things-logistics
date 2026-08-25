@@ -139,7 +139,36 @@ class ApiService {
         defaultOriginIso: 'CR',
         defaultDestinationIso: 'US',
       ),
+      const TenantProfile(
+        tenantId: 'tenant-naviera-don-jorge',
+        orgName: 'Naviera Don Jorge',
+        orgType: 'OCEAN_CARRIER',
+        tagline: 'Maritime Feeder & Intermodal Terminal Operations',
+        brandColorHex: '#1E3A8A', // Deep Maritime Navy
+        accentColorHex: '#F59E0B', // Amber Gold
+        logoIcon: 'directions_boat',
+        scacOrDotCode: 'NDJ-992140',
+        taxIdentifier: 'IMO-9921408',
+        publicKeyEd25519Hex: 'a719c834ef1209b531dc18f92e4091a1005bc18a729e8c459810a9018bc799f2',
+        defaultOriginIso: 'CR',
+        defaultDestinationIso: 'US',
+      ),
     ];
+  }
+
+  /// Returns the signature default trade prompt for a given tenant.
+  String getDefaultPromptForTenant(String tenantId) {
+    switch (tenantId) {
+      case 'tenant-tomas':
+        return '5-Axle Tractor-Trailer Heavy Drayage Relay (Ciudad Hidalgo -> Tecún Umán)';
+      case 'tenant-agroexport-cr':
+        return '15,000 kg fresh Golden MD2 Pineapples in CA Reefer (+4.5°C) from Costa Rica to Miami';
+      case 'tenant-naviera-don-jorge':
+        return '500 TEU Refrigerated Container Feeder from APM Terminals Moín to PortMiami (e-B/L Release)';
+      case 'tenant-campabadal':
+      default:
+        return '20,000 kg frozen poultry cuts (Legs and thighs) from Miami to Guatemala via Tecún Umán border';
+    }
   }
 
   /// Generates a rich, instantaneous mock response customized to the active tenant.
@@ -164,7 +193,7 @@ class ApiService {
     String peerTenantId = 'tenant-tomas';
 
     if (tenantId == 'tenant-tomas') {
-      itemDescription = '5-Axle Tractor-Trailer Heavy Drayage Relay (Ciudad Hidalgo → Tecún Umán)';
+      itemDescription = '5-Axle Tractor-Trailer Heavy Drayage Relay (Ciudad Hidalgo -> Tecún Umán)';
       refinedDescription = 'Commercial Freight Transload Relay (Mexican Plate to Central American Tractor)';
       hsCode = '8704.23.00';
       enteredValue = 85000.00;
@@ -190,6 +219,22 @@ class ApiService {
       tradeAgreement = 'CAFTA-DR (Duty-Free Agricultural Entry)';
       docType = 'USDA_APHIS_PPQ_505';
       docTitle = 'USDA-APHIS Phytosanitary Certificate & Cold-Treatment Protocol (PPQ-505)';
+      peerOrgName = 'Campabadal Global Logistics';
+      peerTenantId = 'tenant-campabadal';
+    } else if (tenantId == 'tenant-naviera-don-jorge') {
+      itemDescription = '500 TEU Refrigerated Feeder Cargo (APM Terminals Moín -> PortMiami)';
+      refinedDescription = 'Maritime Electronic Bill of Lading with 48h Demurrage Early Warning & 3D Ballast Balancing';
+      hsCode = '8901.90.00';
+      enteredValue = 1250000.00;
+      dutyRate = 0.0;
+      originIso = 'CR';
+      destIso = 'US';
+      originCountry = 'Costa Rica (APM Terminals Moín)';
+      destCountry = 'United States (PortMiami Seaport)';
+      customsAuth = 'U.S. CBP & PortMiami Harbormaster';
+      tradeAgreement = 'MLETR Electronic Bill of Lading Protocol';
+      docType = 'ELECTRONIC_BOL';
+      docTitle = 'Maritime Electronic Bill of Lading (e-B/L) & Demurrage Shield (IMO 9921408)';
       peerOrgName = 'Campabadal Global Logistics';
       peerTenantId = 'tenant-campabadal';
     }
@@ -276,16 +321,7 @@ class ApiService {
         totalLandedCostUsd: enteredValue + dutyUsd + vatUsd,
         isDeMinimisExempt: false,
       ),
-      smartChips: [
-        const SmartChip(id: 'chip-poultry', label: '🍗 20T Frozen Poultry (Miami → GT)', category: 'scenario', value: '20,000 kg frozen chicken cuts (Legs and thighs) from Miami to Guatemala'),
-        const SmartChip(id: 'chip-pineapple', label: '🍍 Fresh Pineapples (Costa Rica → US)', category: 'scenario', value: '15,000 kg fresh Golden MD2 Pineapples in CA Reefer from Costa Rica to Miami'),
-        const SmartChip(id: 'chip-avocado', label: '🥑 Hass Avocados (Mexico → US)', category: 'scenario', value: '18,000 kg Hass Avocados CA Reefer from Michoacán Mexico to US Border'),
-        const SmartChip(id: 'chip-bridge', label: '⚖️ Audit Axle Load (Bridge Formula)', category: 'axle_weight', value: 'audit_bridge_formula'),
-        const SmartChip(id: 'chip-nightwatch', label: '🌙 24/7 Night-Watch Geofence Ping', category: 'night_watch', value: 'check_night_watch'),
-        const SmartChip(id: 'chip-ducat', label: '📄 Export DUCA-T Transit Manifest', category: 'customs_document', value: 'export_duca_t'),
-        const SmartChip(id: 'chip-qr', label: '📱 Roadside Inspector QR Code', category: 'federation', value: 'scan_inspector_qr'),
-        const SmartChip(id: 'chip-a2a', label: '🤝 Trigger A2A Carrier Handshake', category: 'federation', value: 'trigger_a2a_handshake'),
-      ],
+      smartChips: _getSmartChipsForTenant(tenantId),
       mandatoryPermits: [
         'USDA FSIS Certificate 9060-5 / APHIS PPQ-505',
         'MAGA / SENASA Export Clearance',
@@ -311,7 +347,7 @@ class ApiService {
         'Active White-Label Tenant: ${profile.orgName} (${profile.scacOrDotCode})',
         'Ed25519 Cryptographic Manifest Seal: ${qrPayload.signatureEd25519.substring(0, 28)}...',
         'Model Armor: Local Gemma on-device sanitizer verified 0 unmasked PII leaks.',
-        'Bridge Formula Audit: ${tenantId == "tenant-agroexport-cr" ? "🟢 PASS: Legal 5-Axle Distribution" : "⚠️ Warning: Trailer Tandem 34,800 lbs exceeds 34,000 lbs threshold"}',
+        'Bridge Formula Audit: ${tenantId == "tenant-agroexport-cr" ? "PASS: Legal 5-Axle Distribution" : "Warning: Trailer Tandem 34,800 lbs exceeds 34,000 lbs threshold"}',
         'Night-Watch Telematics: Silent tracking active. Scheduled 2h WhatsApp push queued.',
         'A2A Federation Handshake: Cryptographically verified with $peerOrgName.',
       ],
@@ -319,6 +355,45 @@ class ApiService {
 
     _telemetryController.add(_getMockTelemetrySpans());
     return resp;
+  }
+
+  List<SmartChip> _getSmartChipsForTenant(String tenantId) {
+    if (tenantId == 'tenant-tomas') {
+      return const [
+        SmartChip(id: 'chip-tomas-drayage', label: '5-Axle Drayage Relay (MX -> GT)', category: 'scenario', value: '5-Axle Tractor-Trailer Heavy Drayage Relay (Ciudad Hidalgo -> Tecún Umán)'),
+        SmartChip(id: 'chip-bridge', label: 'Audit Axle Load (Bridge Formula B)', category: 'axle_weight', value: 'audit_bridge_formula'),
+        SmartChip(id: 'chip-detention-pay', label: 'Driver Detention Payroll (\$75/hr)', category: 'axle_weight', value: 'calculate_driver_detention'),
+        SmartChip(id: 'chip-a2a', label: 'Trigger A2A Transload Relay Handshake', category: 'federation', value: 'trigger_a2a_handshake'),
+        SmartChip(id: 'chip-qr', label: 'Roadside Weigh-Station QR', category: 'federation', value: 'scan_inspector_qr'),
+      ];
+    } else if (tenantId == 'tenant-agroexport-cr') {
+      return const [
+        SmartChip(id: 'chip-pineapple', label: 'Fresh Pineapples CA Reefer (CR -> US)', category: 'scenario', value: '15,000 kg fresh Golden MD2 Pineapples in CA Reefer (+4.5°C) from Costa Rica to Miami'),
+        SmartChip(id: 'chip-avocado', label: 'Hass Avocados CA Reefer (MX -> US)', category: 'scenario', value: '18,000 kg Hass Avocados CA Reefer from Michoacán Mexico to US Border'),
+        SmartChip(id: 'chip-nightwatch', label: '24/7 Night-Watch Reefer Telematics', category: 'night_watch', value: 'check_night_watch'),
+        SmartChip(id: 'chip-phyto', label: 'USDA-APHIS Phyto Certificate (PPQ-505)', category: 'customs_document', value: 'export_phyto'),
+        SmartChip(id: 'chip-tax-shield', label: 'Model Armor 20% Tax Shield', category: 'customs_document', value: 'verify_tax_shield'),
+      ];
+    } else if (tenantId == 'tenant-naviera-don-jorge') {
+      return const [
+        SmartChip(id: 'chip-ndj-feeder', label: '500 TEU Feeder (Limón -> PortMiami)', category: 'scenario', value: '500 TEU Refrigerated Container Feeder from APM Terminals Moín to PortMiami (e-B/L Release)'),
+        SmartChip(id: 'chip-ebl', label: 'Maritime Electronic B/L (e-B/L)', category: 'customs_document', value: 'release_electronic_bol'),
+        SmartChip(id: 'chip-demurrage', label: '48h Demurrage Early-Warning (\$150/day)', category: 'night_watch', value: 'predict_demurrage'),
+        SmartChip(id: 'chip-ballast', label: '3D Ballast Stowage Balance (<10°)', category: 'axle_weight', value: 'audit_ballast_balance'),
+        SmartChip(id: 'chip-a2a', label: 'Terminal-to-Carrier A2A Handshake', category: 'federation', value: 'trigger_a2a_handshake'),
+      ];
+    }
+
+    // Default Campabadal Global Logistics Forwarder
+    return const [
+      SmartChip(id: 'chip-poultry', label: '20T Frozen Poultry (Miami -> GT)', category: 'scenario', value: '20,000 kg frozen chicken cuts (Legs and thighs) from Miami to Guatemala via Tecún Umán border'),
+      SmartChip(id: 'chip-ducat', label: 'Export DUCA-T Transit Manifest', category: 'customs_document', value: 'export_duca_t'),
+      SmartChip(id: 'chip-cif', label: 'Landed Cost & Tariff Breakdown', category: 'customs_document', value: 'calculate_landed_cost'),
+      SmartChip(id: 'chip-bridge', label: 'Bridge Formula Axle Load Check', category: 'axle_weight', value: 'audit_bridge_formula'),
+      SmartChip(id: 'chip-nightwatch', label: '24/7 Night-Watch Geofence Ping', category: 'night_watch', value: 'check_night_watch'),
+      SmartChip(id: 'chip-qr', label: 'Roadside Inspector QR Code', category: 'federation', value: 'scan_inspector_qr'),
+      SmartChip(id: 'chip-a2a', label: 'Forwarder-to-Carrier A2A Handshake', category: 'federation', value: 'trigger_a2a_handshake'),
+    ];
   }
 
   TenantProfile _getTenantProfile(String tenantId) {

@@ -9,6 +9,7 @@ class DocumentType(str, Enum):
     DUCA_D = "DUCA_D" # Central America DUCA Import
     DUIMP = "DUIMP" # Brazil Declaração Única de Importação
     FORM_500 = "FORM_500" # Colombia DIAN Declaracion de Importacion
+    ELECTRONIC_BOL = "ELECTRONIC_BOL" # Maritime Electronic Bill of Lading (e-B/L)
     GENERIC_COMMERCIAL = "GENERIC_COMMERCIAL"
 
 class TenantType(str, Enum):
@@ -16,6 +17,7 @@ class TenantType(str, Enum):
     REGIONAL_CARRIER = "REGIONAL_CARRIER"
     CUSTOMS_BROKER = "CUSTOMS_BROKER"
     ENTERPRISE_SHIPPER = "ENTERPRISE_SHIPPER"
+    OCEAN_CARRIER = "OCEAN_CARRIER"
     TERMINAL_OPERATOR = "TERMINAL_OPERATOR"
 
 class TenantProfile(BaseModel):

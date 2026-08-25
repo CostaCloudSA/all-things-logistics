@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.0] - 2026-08-23 (Operations Hub UI Overhaul)
+
+### 🎨 Frontend & UX Overhaul
+- **2x4 Tactile Operations Hub Grid**: Implemented high-contrast squircle macro-grid featuring:
+  - `Scan QR Code` (Royal Blue `#2563EB`) $\to$ Roadside Offline Ed25519 Inspector & Camera OCR.
+  - `Cargo Manifest` (Vibrant Green `#16A34A`) $\to$ Golden Document DUCA-T & B/L modal.
+  - `Track Shipments` (Vibrant Orange `#EA580C`) $\to$ 24/7 Night-Watch Geofence & WhatsApp Dispatch.
+  - `Inventory Lookup` (Dark Teal `#0D9488`) $\to$ BigQuery Data Mesh SKU schedule.
+  - `Create BOL` (Coral Red `#EF4444`) $\to$ Multimodal Vision OCR and manifest synthesizer.
+  - `Customs Clearance` (Royal Purple `#7C3AED`) $\to$ 0% CAFTA-DR duty & CIF Landed Cost engine.
+  - `Schedule Pickup` (Golden Amber `#EAB308`) $\to$ Cabotage Transload Relay & tractor dispatch.
+  - `Warehouse Entry` (Bright Sky Blue `#0EA5E9`) $\to$ 5-Axle Bridge Formula load distribution.
+- **Top Operator Profile Header**: Integrated circular avatar with operator badge ("T. Omas") and hamburger menu drawer (`≡`).
+- **4-Tab Enterprise Navigation**: Restructured into `Dashboard` (Hero 2x4 Grid), `Fleet` (SME Telematics & Axle Scale), `Profile` (Multi-Tenant Switcher & SCAC/DOT credentials), and `Settings` (Security & Ed25519 Verification).
+- **Interactive App Drawer**: Side drawer housing tenant switcher, operator status, and GCP Cloud Run infrastructure health.
+
+---
+
 ## [2.0.0] - 2026-08-22 (Fortified Enterprise Fleet Release)
 
 ### 🎨 Frontend & UX

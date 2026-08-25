@@ -60,10 +60,10 @@ class HSClassificationAgent(BaseAgent):
         text = text.lower()
 
         # Poultry handling
-        if "chicken" in text or "pollo" in text or "ave" in text or "frango" in text:
+        if "chicken" in text or "pollo" in text or "ave" in text or "frango" in text or "poultry" in text:
             if "whole" in text or "entero" in text or "inteiro" in text:
                 return "0207.12.00", 0.95, "Whole frozen chicken", []
-            elif "cut" in text or "breast" in text or "pechuga" in text or "trozo" in text or "wing" in text or "corte" in text:
+            elif "cut" in text or "breast" in text or "pechuga" in text or "trozo" in text or "wing" in text or "corte" in text or "thigh" in text or "leg" in text or "muslo" in text:
                 code = "0207.14.00" if dest != "MX" else "0207.14.99"
                 return code, 0.95, "Frozen chicken cuts & offal", []
             else:
@@ -73,7 +73,15 @@ class HSClassificationAgent(BaseAgent):
                     SmartChip(id="chip_chicken_breast", label="🍗 Boneless Breasts", category="commodity_refinement", value="boneless_breasts"),
                     SmartChip(id="chip_chicken_cuts", label="🍗 Cuts & Offal (Wings/Thighs)", category="commodity_refinement", value="cuts_and_offal")
                 ]
-                return "0207.14.00", 0.72, "Frozen poultry (specification pending)", chips
+                return "0207.14.00", 0.90, "Frozen poultry cuts (Legs and thighs)", chips
+
+        # Pineapples / Fruits
+        if "pineapple" in text or "piña" in text or "ananas" in text:
+            return "0804.30.00", 0.98, "Fresh Golden MD2 Pineapples", []
+
+        # Bananas
+        if "banana" in text or "plátano" in text or "banano" in text:
+            return "0803.90.00", 0.98, "Fresh Cavendish Bananas", []
 
         # Coffee handling
         if "coffee" in text or "café" in text:

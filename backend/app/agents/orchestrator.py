@@ -184,7 +184,7 @@ class FleetOrchestratorAgent(BaseAgent):
 
         # 11. Cross-Tenant A2A Federated Handshake Simulation
         peer_tenant_id = "tenant-tomas" if tenant.tenant_id == "tenant-campabadal" else "tenant-campabadal"
-        if tenant.tenant_id == "tenant-agroexport-cr":
+        if tenant.tenant_id in ["tenant-agroexport-cr", "tenant-naviera-don-jorge"]:
             peer_tenant_id = "tenant-campabadal"
 
         peer_tenant = tenant_manager.get_tenant(peer_tenant_id)

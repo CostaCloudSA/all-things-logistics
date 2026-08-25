@@ -109,8 +109,8 @@ Detailed checklist and implementation milestones for the **Campabadal Global Log
 - [ ] Fill in track selection: **Fortified Enterprise Fleet**.
 
 #### 🗓️ Day 6: August 27 — Bonus Points Publishing (+0.4 pts)
-- [ ] Publish Technical Blog Post (+0.2 pts) to Dev.to / Medium using [`docs/TECHNICAL_BLOG_POST.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/TECHNICAL_BLOG_POST.md).
-- [ ] Publish LinkedIn Announcement Post (+0.2 pts) using [`docs/LINKEDIN_POST.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/LINKEDIN_POST.md) with `#AllThingsAgenticHackathon`.
+- [x] Technical Blog Post copy finalized & locked: [`docs/TECHNICAL_BLOG_POST.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/TECHNICAL_BLOG_POST.md) (Marked Read-Only, ready for Dev.to / Medium publish +0.2 pts).
+- [x] LinkedIn Announcement Post copy finalized & locked: [`docs/LINKEDIN_POST.md`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/docs/LINKEDIN_POST.md) (Marked Read-Only, ready for publish with `#AllThingsAgenticHackathon` +0.2 pts).
 - [ ] Add article and post links to Devpost submission bonus field.
 
 #### 🗓️ Day 7: August 28 — Final Quality Review & Official Submission

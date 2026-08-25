@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-class AxleWeightCard extends StatelessWidget {
+/// Interactive Federal Bridge Formula B Axle Distribution Visualizer.
+/// Allows live shifting of freight weight between trailer and drive tandems
+/// to demonstrate real-time roadside scale compliance.
+class AxleWeightCard extends StatefulWidget {
   final double steerLbs;
   final double driveTandemLbs;
   final double trailerTandemLbs;
@@ -15,11 +18,31 @@ class AxleWeightCard extends StatelessWidget {
     this.trailerTandemLbs = 34800.0,
     this.grossWeightLbs = 80100.0,
     this.isCompliant = false,
-    this.advice = '⚠️ Trailer tandem (34,800 lbs) exceeds 34k limit. Shift 1,200 lbs forward before scale weigh-in.',
+    this.advice = 'AXLE SCALE OVERLOAD: Trailer tandem (34,800 lbs) exceeds 34,000 lbs statutory limit. Shift 1,200 lbs forward before scale weigh-in.',
   }) : super(key: key);
 
   @override
+  State<AxleWeightCard> createState() => _AxleWeightCardState();
+}
+
+class _AxleWeightCardState extends State<AxleWeightCard> {
+  late double _shiftAmountLbs;
+
+  @override
+  void initState() {
+    super.initState();
+    _shiftAmountLbs = 0.0;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final curDrive = widget.driveTandemLbs + _shiftAmountLbs;
+    final curTrailer = widget.trailerTandemLbs - _shiftAmountLbs;
+    final isDriveOk = curDrive <= 34000.0;
+    final isTrailerOk = curTrailer <= 34000.0;
+    final isSteerOk = widget.steerLbs <= 12000.0;
+    final isCompliant = isDriveOk && isTrailerOk && isSteerOk && widget.grossWeightLbs <= 80000.0;
+
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFF1E293B),
@@ -49,29 +72,33 @@ class AxleWeightCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF59E0B).withOpacity(0.2),
+                      color: (isCompliant ? const Color(0xFF10B981) : const Color(0xFFF59E0B)).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.scale_rounded, color: Color(0xFFFBBF24), size: 20),
+                    child: Icon(
+                      Icons.scale_rounded,
+                      color: isCompliant ? const Color(0xFF34D399) : const Color(0xFFFBBF24),
+                      size: 20,
+                    ),
                   ),
                   const SizedBox(width: 10),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'BRIDGE FORMULA AUDITOR',
+                        'BRIDGE FORMULA B AUDITOR',
                         style: TextStyle(
-                          color: Color(0xFFFBBF24),
+                          color: isCompliant ? const Color(0xFF34D399) : const Color(0xFFFBBF24),
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 1.0,
                         ),
                       ),
-                      Text(
-                        'Axle Load Distribution',
+                      const Text(
+                        '5-Axle Weight Distribution (23 CFR 658)',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -86,13 +113,24 @@ class AxleWeightCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: (isCompliant ? Colors.green : Colors.amber).withOpacity(0.5)),
                 ),
-                child: Text(
-                  isCompliant ? 'LEGAL SCALE' : 'REBALANCE REQ',
-                  style: TextStyle(
-                    color: isCompliant ? Colors.greenAccent : Colors.amberAccent,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isCompliant ? Icons.check_circle : Icons.warning_amber,
+                      size: 11,
+                      color: isCompliant ? Colors.greenAccent : Colors.amberAccent,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isCompliant ? 'LEGAL SCALE COMPLIANT' : 'AXLE OVERLOAD',
+                      style: TextStyle(
+                        color: isCompliant ? Colors.greenAccent : Colors.amberAccent,
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -100,18 +138,68 @@ class AxleWeightCard extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // Axle Visual Meter
+          // Axle Visual Meters
           Row(
             children: [
-              _buildAxleBox('STEER AXLE', steerLbs, 12000.0, steerLbs <= 12000.0),
+              _buildAxleBox('STEER AXLE', widget.steerLbs, 12000.0, isSteerOk),
               const SizedBox(width: 8),
-              _buildAxleBox('DRIVE TANDEM', driveTandemLbs, 34000.0, driveTandemLbs <= 34000.0),
+              _buildAxleBox('DRIVE TANDEM', curDrive, 34000.0, isDriveOk),
               const SizedBox(width: 8),
-              _buildAxleBox('TRAILER TANDEM', trailerTandemLbs, 34000.0, trailerTandemLbs <= 34000.0),
+              _buildAxleBox('TRAILER TANDEM', curTrailer, 34000.0, isTrailerOk),
             ],
           ),
 
           const SizedBox(height: 12),
+
+          // Interactive Weight Redistribution Slider
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0F172A),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.white.withOpacity(0.06)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tandem Slider: Shift Weight Forward ->',
+                      style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      '+${_shiftAmountLbs.toStringAsFixed(0)} lbs to Drive',
+                      style: const TextStyle(color: Color(0xFF38BDF8), fontSize: 11, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    activeTrackColor: const Color(0xFF0284C7),
+                    inactiveTrackColor: const Color(0xFF334155),
+                    thumbColor: const Color(0xFF38BDF8),
+                    overlayColor: const Color(0xFF38BDF8).withOpacity(0.2),
+                    trackHeight: 3,
+                  ),
+                  child: Slider(
+                    value: _shiftAmountLbs,
+                    min: 0.0,
+                    max: 2000.0,
+                    divisions: 20,
+                    onChanged: (val) {
+                      setState(() {
+                        _shiftAmountLbs = val;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 10),
 
           // Advice / Action Banner
           Container(
@@ -131,7 +219,9 @@ class AxleWeightCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    advice,
+                    isCompliant
+                        ? 'Bridge Formula B verified: All axles within 23 CFR 658 statutory limits. Roadside scale pre-cleared.'
+                        : widget.advice,
                     style: const TextStyle(
                       color: Color(0xFFE2E8F0),
                       fontSize: 11,
@@ -186,3 +276,4 @@ class AxleWeightCard extends StatelessWidget {
     );
   }
 }
+

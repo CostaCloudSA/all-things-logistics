@@ -189,7 +189,7 @@ class GoldenDocumentCard extends StatelessWidget {
                           children: [
                             const Icon(Icons.check_circle, color: Colors.white, size: 18),
                             const SizedBox(width: 8),
-                            Text('✅ Exported Signed ${docType} (Ed25519 Sealed & Stamped)!'),
+                            Text('Exported Signed ${docType} (Ed25519 Sealed & Stamped)!'),
                           ],
                         ),
                         backgroundColor: const Color(0xFF0284C7),
@@ -269,7 +269,7 @@ class GoldenDocumentCard extends StatelessWidget {
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('🎉 Golden Document Transmitted Successfully to Customs EDI Portal!'),
+                    content: Text('Golden Document Transmitted Successfully to Customs EDI Portal!'),
                     backgroundColor: Color(0xFF10B981),
                   ),
                 );

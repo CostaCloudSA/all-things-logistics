@@ -11,9 +11,8 @@ RUN flutter pub get
 # Copy client source code
 COPY . .
 
-# Build Flutter Web in release mode with CanvasKit/HTML rendering
-ARG BACKEND_API_URL=https://logistics.campabadal.com
-RUN flutter build web --release --dart-define=BACKEND_API_URL=${BACKEND_API_URL}
+ARG BACKEND_API_URL=https://logistics-backend-api-979851188322.us-central1.run.app
+RUN flutter build web --release --pwa-strategy=none --no-tree-shake-icons --dart-define=BACKEND_API_URL=${BACKEND_API_URL}
 
 # Stage 2: Serve the compiled web bundle via lightweight NGINX
 FROM nginx:alpine

@@ -65,6 +65,20 @@ class TenantManager:
                 default_origin_iso="CR",
                 default_destination_iso="US",
             ),
+            "tenant-naviera-don-jorge": TenantProfile(
+                tenant_id="tenant-naviera-don-jorge",
+                org_name="Naviera Don Jorge",
+                org_type=TenantType.OCEAN_CARRIER,
+                tagline="Maritime Feeder & Intermodal Terminal Operations",
+                brand_color_hex="#1E3A8A",  # Deep Maritime Navy
+                accent_color_hex="#F59E0B",  # Amber Gold
+                logo_icon="directions_boat",
+                scac_or_dot_code="NDJ-992140",
+                tax_identifier="IMO-9921408",
+                public_key_ed25519_hex="a719c834ef1209b531dc18f92e4091a1005bc18a729e8c459810a9018bc799f2",
+                default_origin_iso="CR",
+                default_destination_iso="US",
+            ),
             # Aliases for backward compatibility with existing integration tests
             "tenant-tecun": TenantProfile(
                 tenant_id="tenant-tomas",
@@ -98,12 +112,12 @@ class TenantManager:
 
     def list_tenants(self) -> List[TenantProfile]:
         """
-        Returns a list of the 3 primary white-labeled logistics tenant profiles.
+        Returns a list of the 4 primary white-labeled logistics tenant profiles.
 
         Returns:
-            List[TenantProfile]: Catalog of Campabadal Global, Transportes Tomas, and Agroexport Costa Rica.
+            List[TenantProfile]: Catalog of Campabadal Global, Transportes Tomas, Agroexport Costa Rica, and Naviera Don Jorge.
         """
-        primary_keys = ["tenant-campabadal", "tenant-tomas", "tenant-agroexport-cr"]
+        primary_keys = ["tenant-campabadal", "tenant-tomas", "tenant-agroexport-cr", "tenant-naviera-don-jorge"]
         return [self._tenants[k] for k in primary_keys if k in self._tenants]
 
     def get_tenant(self, tenant_id: Optional[str]) -> TenantProfile:

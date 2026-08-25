@@ -12,36 +12,35 @@
 
 🚀 **What we built, where enterprise logistics is headed, and why AI-first design is worthless without real-world ground truth.**
 
-Over the past week, our team competed in the **Google Cloud & DeepMind All Things Agentic Hackathon** under the **Fortified Enterprise Fleet** track. 
+Over the past week, I competed in the **Google Cloud & DeepMind All Things Agentic Hackathon** under the **Fortified Enterprise Fleet** track. 
 
-When Google dropped **Gemini 3.7 Flash** on August 13 with hybrid reasoning, we took on an ambitious challenge: build a production-grade, 12-agent enterprise trade compliance platform from scratch in a single unbroken Google Antigravity session.
+When Google dropped **Gemini 3.7 Flash** on August 13 with hybrid reasoning, I took on an ambitious challenge: how fast can we build a production grade agent swarm using the least amount of resources, constructing a 12-agent enterprise trade compliance platform from scratch in a single unbroken Google Antigravity session?
 
-Today, I’m thrilled to unveil **Campabadal Global Logistics**: a Fortified Multi-Agent Fleet live in production at [logistics.campabadal.com](https://logistics.campabadal.com).
+Today, I’m thrilled to unveil **All Things Logistics**: a Fortified Multi-Agent Fleet live in production at [logistics.campabadal.com](https://logistics.campabadal.com).
 
 ---
 
 ### 🧠 The Illusion of Textbook AI Architecture
 
-When engineers build software from behind a desk, they rely on clean APIs, customs manuals, and textbook supply chain diagrams. 
+When we coders and engineers build software from behind a desk, we rely on clean APIs, customs manuals, and textbook supply chain diagrams. 
 
-Here’s the hard truth: **The most critical operational variables in global logistics are not documented online.** They exist exclusively in the lived intuition and battle scars of real-world operators.
+Here’s the hard truth: **The most critical operational variables in global logistics are not necessarily documented online.** They exist exclusively in the lived intuition and battle scars of real-world operators.
 
 To ground our system in reality, we sat down for an extensive operational audit with **Jorge Campabadal**, a multinational logistics veteran with decades leading shipping lines, port terminals, customs, and trucking fleets across the Americas.
 
-What did textbook software miss?
-1. **The Axle Load Trap**: A forwarder declares a 20-ton container (100% legal on gross weight). But because cargo wasn’t balanced over the axles, it violates statutory **Federal & SIECA Bridge Formulas** ($W = 500[\frac{LN}{N-1} + 12N + 36]$), triggering \$2,500 weigh-scale fines and driver license penalties.
-2. **The 90% Re-Typing Bottleneck**: Mexican tractors legally cannot cross into Central America. Everything must be transloaded in a warehouse at **Tecún Umán**, where workers print ocean B/Ls and manually re-type 90% of the fields into local customs terminals.
-3. **The 24/7 Night-Watch Drain**: Logistics companies pay overnight staff solely to stare at GPS coordinates and manually send WhatsApp status updates to clients every two hours.
-4. **Non-Resident Tax Surprises**: Foreign exporters are routinely blindsided when Central American authorities deduct a 20% statutory income tax withholding at source.
+What did our dry run software miss?
+1. **The Axle Load Trap**: A forwarder declares a 20-ton container (100% legal on gross weight). But because cargo wasn’t balanced over the axles, it may violate statutory **Federal & SIECA Bridge Formulas** ($W = 500[\frac{LN}{N-1} + 12N + 36]$), triggering \$2,500 weigh-scale fines and driver license penalties.
+2. **The 90% Re-Typing Bottleneck**: Mexican truckers legally cannot cross into Central America. Everything must be transloaded in a warehouse at **Tecún Umán**, where workers print ocean B/Ls and may have to manually re-type 90% of the fields into local customs terminals.
+3. **The 24/7 Night-Watch Drain**: Some logistics companies pay overnight staff solely to stare at GPS coordinates and manually send WhatsApp status updates to clients every two hours.
+4. **Non-Resident Tax Surprises**: Some foreign exporters are routinely blindsided when some Central American authorities deduct a 20% statutory income tax withholding at source.
 
 ---
 
 ### ⚡ The Breakthrough: How We Rearchitected in Days
 
 By pairing with **Gemini 3.7 Flash** in Google Antigravity, we translated Jorge's raw interview transcript directly into an enterprise-ready architecture within days:
-* 🏢 **Multi-Company Logistics Stack Switcher**: 1-click dynamic switching between **Campabadal Global Logistics** (3PL Forwarder in Blue), **Transportes Tomas** (Motor Carrier in Red), and **Agroexport Costa Rica** (Shipper in Green).
-* ⚖️ **Bridge Formula Auditor Agent**: Pre-screens axle loads and advises warehouse loaders on pallet shifts before highway departure.
-* 🌙 **Autonomous 24/7 Night-Watch Agent**: Silently monitors cold-chain Controlled Atmosphere ($O_2/CO_2$) telemetry at -18°C and automates 2-hour WhatsApp client dispatch.
+* 🏢 **Multi-Company Logistics Stack Switcher**: 1-click dynamic switching to tailor the experience to the needs of each individual company involved in the logistics industry (e.g. 3PL Forwarders, Motor Carriers, Shippers).
+* 🌙 **Autonomous 24/7 Night-Watch Agent**: Silently monitors everything including truck GPS, ship GPS, controlled atmosphere telemetry and more at -18°C, and automates 2-hour WhatsApp client dispatch.
 * 🔄 **Tecún Umán Transload Relay Agent**: Ingests ocean B/Ls and auto-generates unified Central American transit declarations (`DUCA-T`), eliminating 45 minutes of border re-typing.
 * 🔏 **Ed25519 Cryptographic Manifest Signer**: Generates asymmetric digital seals that roadside highway inspectors verify in $<1$s completely offline.
 * 🤝 **The Conglomerate Multiplier Effect**: Independent white-labeled instances execute B2B Agent-to-Agent (A2A) handshakes with unbroken W3C distributed trace continuity (`00-{trace_id}-{span_id}-01`).
