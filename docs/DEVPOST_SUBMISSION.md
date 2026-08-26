@@ -83,6 +83,30 @@ Large enterprise conglomerates manage multiple verticals across the supply chain
 
 ---
 
+## 🛡️ Fortified Enterprise Fleet: Cataloging, Weeks of Async Context & Security Governance
+
+To meet the rigorous requirements of the **Fortified Enterprise Fleet** track, our platform implements enterprise-grade cataloging, persistent state management across long time horizons, and strict data sovereignty:
+
+### 1. Cross-Department Agent Cataloging (`AgentRegistry`)
+* All 12 autonomous agents are cataloged in a centralized registry with strict typed I/O contracts (`input_schema`, `output_schema`), capability tags, model versions, and dedicated Google Cloud Service Accounts (e.g., `sa-hs-classifier@...`, `sa-fleet-telematics@...`, `sa-finance-billing@...`).
+* The `FleetOrchestratorAgent` dynamically resolves the tenant profile and corridor constraints, routing execution across departments (Brokerage, Fleet Safety, Agronomy/Export, Maritime Terminal) without monolithic prompt coupling.
+
+### 2. Context Continuity Across Weeks of Asynchronous Operations
+* **Long Time Horizons**: International logistics journeys span **14–21 days** (ocean container transit) and **5–10 days** (multinational highway corridors). Keeping raw LLM chat contexts open for weeks leads to context rot and excessive costs.
+* **5-Pillar Asynchronous State Engine**:
+  1. **W3C Distributed Traceparent Continuity**: A unified trace header (`00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01`) is minted at booking and propagated across asynchronous background hops, edge devices, and micro-agents over weeks.
+  2. **BigQuery Data Mesh as Persistent State Store**: Intermediate state is serialized into partitioned BigQuery tables (`ds_fleet_telematics.active_trips`, `ds_warehousing_wms.bonded_inventory`, `ds_customs_compliance.filings`), allowing agents resuming weeks later to query exact state instantly.
+  3. **Ed25519 Cryptographic Checkpoints**: Each milestone (weigh-scale green pass, phyto clearance, transload receipt, terminal gate pass) produces a signed SHA-256 seal.
+  4. **Autonomous 24/7 Night-Watch & Demurrage Clocks**: Background sentinels run scheduled monitoring loops (e.g., 2-hour WhatsApp telematics dispatches, 48-hour container free-time expiration countdowns) without human intervention.
+  5. **Enterprise `MemoryBank`**: Caches long-term importer profiles, customs bonds, and recurring carrier lane agreements across billing cycles.
+
+### 3. Production Data Safety & Compliance Guardrails
+* **Dual-Defense Model Armor**: Sensitive identifiers (EIN, RFC, NIT, CNPJ, SSN) are redacted on-device by **Local Gemma** (`[EIN-REDACTED-9912]`) before prompt dispatch.
+* **Deterministic Truth Gates**: The LLM is never permitted to hallucinate statutory duties, axle limits, or non-resident tax withholdings—Model Armor validates and deterministically overrides any hallucination using BigQuery ground truth tables.
+* **Data Sovereignty**: Complete multi-tenant dataset isolation with IAM role boundaries and sovereign Ed25519 keypairs.
+
+---
+
 ## 🧗 Challenges We Ran Into
 
 * **Translating Statutory Bridge Formula Math**: Modeling 23 CFR 658 non-linear axle weight constraints ($W = 500[\frac{LN}{N-1} + 12N + 36]$) into deterministic Model Armor validation rules across both US and Central American SIECA standards.

@@ -154,6 +154,23 @@ def sign_manifest(payload: Dict[str, Any], private_key_hex: str) -> ManifestSign
 
 ---
 
+## 🏛️ Enterprise Cataloging & Context Across Weeks of Asynchronous Operations
+
+In enterprise supply chain software, operations are inherently asynchronous and span **weeks**:
+* **14–21 Day Ocean Voyages**: From Moín (Costa Rica) to Rotterdam or PortMiami.
+* **5–10 Day Multinational Trucking**: Transiting multiple national borders with customs holds.
+* **48-Hour Terminal Demurrage Cliffs**: Monitoring yard free-time to avoid \$150/day penalties.
+
+Holding open raw LLM conversation loops for weeks is cost-prohibitive, unstable, and prone to context decay. Instead, we architected a **5-Pillar Asynchronous State & Governance Framework**:
+
+1. **Centralized Enterprise `AgentRegistry`**: All 12 autonomous micro-agents are cataloged with typed Pydantic input/output schemas, capability tags, and dedicated least-privilege Google Cloud Service Accounts (`sa-hs-classifier`, `sa-fleet-telematics`, `sa-finance-billing`).
+2. **W3C Distributed Tracing (`traceparent`) Continuity**: A single `00-{trace_id}-{span_id}-01` header is stamped at initial booking and maintained across weeks of background micro-agent executions.
+3. **Sovereign BigQuery Data Mesh as Persistent State Store**: Intermediate states are serialized into tenant-partitioned BigQuery datasets (`ds_fleet_telematics.active_trips`, `ds_warehousing_wms.bonded_inventory`, `ds_customs_compliance.filings`). Agents query exact historical state deterministically upon waking.
+4. **Asymmetric Ed25519 Checkpoint Signatures**: Every milestone (scale pass, phytosanitary clearance, cross-dock transload, terminal gate release) is hashed (SHA-256) and signed.
+5. **Autonomous 24/7 Night-Watch Sentinel Loops**: Background cron jobs (`night_watch.py`, `demurrage_predictor.py`) monitor real-time telematics streams and push 2-hour WhatsApp status alerts to clients without human intervention.
+
+---
+
 ## ⚡ 2. The Conglomerate Multiplier Effect ("Network Flywheel")
 
 **All Things Logistics was designed from Day 1 with this in mind: how to solve the needs of a multinational, multi-vertical conglomerate with a single, elegant solution.**

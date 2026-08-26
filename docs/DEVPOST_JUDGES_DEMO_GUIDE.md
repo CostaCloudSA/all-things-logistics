@@ -42,6 +42,16 @@ graph TD
 
 ---
 
+## 🛡️ Fortified Enterprise Fleet Track Criteria Fulfillment
+
+| Hackathon Requirement | How All Things Logistics Fulfills It | Code & Architectural Proof |
+| :--- | :--- | :--- |
+| **1. Cataloging Agents for Cross-Department Use** | Centralized `AgentRegistry` catalogs all 12 micro-agents with typed Pydantic I/O schemas, capability tags, and dedicated IAM Service Accounts (`sa-hs-classifier`, `sa-fleet-telematics`, `sa-customs-broker`). | [`backend/app/agents/registry.py`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/backend/app/agents/registry.py)<br>Dynamic routing via `FleetOrchestratorAgent`. |
+| **2. Context Across Weeks of Asynchronous Operations** | Uses W3C distributed `traceparent` headers (`00-4bf92...-01`) and partitioned BigQuery Data Mesh tables (`ds_fleet_telematics.active_trips`, `ds_warehousing_wms.bonded_inventory`) to persist state across 14-21 day ocean voyages and multi-day highway transits with Ed25519 cryptographic checkpoint seals. | [`backend/app/core/telemetry.py`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/backend/app/core/telemetry.py)<br>24/7 background sentinel loops (`night_watch.py`, `demurrage_predictor.py`). |
+| **3. Safe Production Data Interaction & Compliance** | Dual-Defense Model Armor redacts PII on-device with Local Gemma (`[EIN-REDACTED-9912]`), while deterministic BigQuery Truth Gates validate tariffs, 23 CFR 658 axle math, and DTA tax treaties to override LLM hallucinations. | [`backend/app/security/model_armor.py`](file:///c:/Users/campabadal/Documents/antigravity/logistics%20hackathon/backend/app/security/model_armor.py)<br>Sovereign multi-tenant dataset partitioning. |
+
+---
+
 ## ⚡ 1-Minute Evaluation Matrix (Paperwork & Operational Variables Automated)
 
 | Company Persona | Logistics Role & User | Paperwork & Variable Friction Eliminated | 3-Step Interactive AI Demo on Live Site |

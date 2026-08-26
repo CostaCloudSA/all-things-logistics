@@ -27,16 +27,18 @@ The platform provides dedicated, adaptive operational experiences across the ent
 │ 🏢 CAMPABADAL GLOBAL    │ 🚛 TRANSPORTES TOMAS     │ 🍍 AGROEXPORT COSTA RICA │ ⚓ NAVIERA DON JORGE│
 │ 3PL Freight & Brokerage │ Cross-Border Carrier     │ Agricultural Shipper     │ Ocean Carrier/Port│
 │ Accent: #0284C7 (Blue)  │ Accent: #DC2626 (Red)    │ Accent: #059669 (Green)  │ Accent: #1E3A8A  │
-│ Operator: T. Omas       │ Operator: Tomas R.       │ Operator: Elena M.       │ Operator: Jorge B│
+│ Operator: T. Omas       │ Operator: T. Tomas       │ Operator: V. Solis       │ Operator: Cap. C. Jorge│
 └─────────────────────────┴──────────────────────────┴──────────────────────────┴──────────────────┘
 ```
 
 | Company Persona | Role & Active User | Traditional Paperwork & Friction Eliminated | 1-Tap Live Demo Guide |
 | :--- | :--- | :--- | :--- |
 | **Campabadal Global** | **3PL Freight Broker**<br>**T. Omas** *(Senior Broker)* | **45 minutes manual re-keying** between commercial invoices, CBP 7501, and Central American **DUCA-T** transit forms. | [`Demo 1: 3PL Customs Brokerage`](docs/demos/DEMO_1_CAMPABADAL_3PL_BROKERAGE.md)<br>Claims **\$6,975 USD** in 0% CAFTA-DR duties. |
-| **Transportes Tomas** | **Motor Carrier**<br>**Tomas R.** *(Safety Director)* | Illegal foreign cabotage fines (\$10,000+), 4-hour border weigh scale queues, and manual paper roadside inspection slips. | [`Demo 2: Motor Carrier & Cabotage`](docs/demos/DEMO_2_TRANSPORTES_TOMAS_MOTOR_CARRIER.md)<br>Matches border tractors in $<90$s & SAT Green Lane Pre-Pass. |
-| **Agroexport Costa Rica** | **Produce Shipper**<br>**Elena M.** *(Export Director)* | **20% foreign tax withholding leakage** (\$5,000/container), paper phytosanitary permits, and port cold-chain spoilage. | [`Demo 3: Produce Shipper Tax Shield`](docs/demos/DEMO_3_AGROEXPORT_CR_PRODUCE_SHIPPER.md)<br>Saves **\$4,250 USD net cash** via DTA Article 7 shield. |
-| **Naviera Don Jorge** | **Ocean Carrier & Port**<br>**Cap. Jorge B.** *(Marine Super)* | **\$150/day container demurrage fines**, physical paper Master B/L courier delays, and manual gate interchange slips (EIR). | [`Demo 4: Ocean Carrier Demurrage`](docs/demos/DEMO_4_NAVIERA_DON_JORGE_OCEAN_LINE.md)<br>48h early warning, instant gate pass & master e-B/L release. |
+| **Transportes Tomas** | **Motor Carrier**<br>**T. Tomas** *(Safety Director)* | Illegal foreign cabotage fines (\$10,000+), 4-hour border weigh scale queues, and manual paper roadside inspection slips. | [`Demo 2: Motor Carrier & Cabotage`](docs/demos/DEMO_2_TRANSPORTES_TOMAS_MOTOR_CARRIER.md)<br>Matches border tractors in $<90$s & SAT Green Lane Pre-Pass. |
+| **Agroexport Costa Rica** | **Produce Shipper**<br>**V. Solis** *(Export Director)* | **20% foreign tax withholding leakage** (\$5,000/container), paper phytosanitary permits, and port cold-chain spoilage. | [`Demo 3: Produce Shipper Tax Shield`](docs/demos/DEMO_3_AGROEXPORT_CR_PRODUCE_SHIPPER.md)<br>Saves **\$4,250 USD net cash** via DTA Article 7 shield. |
+| **Naviera Don Jorge** | **Ocean Carrier & Port**<br>**Cap. C. Jorge** *(Marine Super)* | **\$150/day container demurrage fines**, physical paper Master B/L courier delays, and manual gate interchange slips (EIR). | [`Demo 4: Ocean Carrier Demurrage`](docs/demos/DEMO_4_NAVIERA_DON_JORGE_OCEAN_LINE.md)<br>48h early warning, instant gate pass & master e-B/L release. |
+
+> 🔍 **Devpost Judges Live Agentic Trace Inspector**: Open any demo on [https://logistics.campabadal.com](https://logistics.campabadal.com) and tap **`[🔍 DEVPOST JUDGES: AUDIT AGENTIC TRACE]`** in Step 2 or Step 3 to inspect live parameterized BigQuery SQL queries, Local Gemma PII sanitization logs, W3C traceparent headers, 97.7% prompt token reductions, and Ed25519 signatures!
 
 ---
 
