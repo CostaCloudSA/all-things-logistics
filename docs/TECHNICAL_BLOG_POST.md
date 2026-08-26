@@ -90,7 +90,7 @@ flowchart TD
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                              DESKLESS MOBILE ZERO-TYPING UI                            │
 │           (Camera Vision OCR • Voice-to-Trade Audio • Contextual Smart Chips)          │
-│           • White-Label Persona Switcher (Campabadal Blue, Tomas Red, Agro Green)      │
+│           • White-Label Persona Switcher (Campabadal Blue, Tomas Red, Agro Green, Naviera Navy) │
 └───────────────────────────────────────────┬────────────────────────────────────────────┘
                                             │ Streaming REST / WebSocket
 ┌───────────────────────────────────────────▼────────────────────────────────────────────┐

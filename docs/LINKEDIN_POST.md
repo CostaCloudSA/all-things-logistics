@@ -39,7 +39,7 @@ What did our dry run software miss?
 ### ⚡ The Breakthrough: How We Rearchitected in Days
 
 By pairing with **Gemini 3.7 Flash** in Google Antigravity, we translated Jorge's raw interview transcript directly into an enterprise-ready architecture within days:
-* 🏢 **Multi-Company Logistics Stack Switcher**: 1-click dynamic switching to tailor the experience to the needs of each individual company involved in the logistics industry (e.g. 3PL Forwarders, Motor Carriers, Shippers).
+* 🏢 **Multi-Company Logistics Stack Switcher**: 1-click dynamic switching between 4 distinct industry verticals (3PL Customs Brokerage, Regional Motor Carriers, Fresh Produce Shippers, and Ocean Lines) with dynamic mathematical reasoning and live agentic trace audits.
 * 🌙 **Autonomous 24/7 Night-Watch Agent**: Silently monitors everything including truck GPS, ship GPS, controlled atmosphere telemetry and more at -18°C, and automates 2-hour WhatsApp client dispatch.
 * 🔄 **Tecún Umán Transload Relay Agent**: Ingests ocean B/Ls and auto-generates unified Central American transit declarations (`DUCA-T`), eliminating 45 minutes of border re-typing.
 * 🔏 **Ed25519 Cryptographic Manifest Signer**: Generates asymmetric digital seals that roadside highway inspectors verify in $<1$s completely offline.

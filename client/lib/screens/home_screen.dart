@@ -683,11 +683,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   _OperatorInfo _getOperatorInfo() {
     switch (_activeTenantId) {
       case 'tenant-tomas':
-        return const _OperatorInfo('Tomas R.', 'Fleet Safety Director', 'SCT-MX-SAFETY-8821', Color(0xFFDC2626));
+        return const _OperatorInfo('T. Tomas', 'Fleet Safety Director', 'SCT-MX-SAFETY-8821', Color(0xFFDC2626));
       case 'tenant-agroexport-cr':
-        return const _OperatorInfo('Elena M.', 'Export Compliance Director', 'PROCOMER-CR-441', Color(0xFF059669));
+        return const _OperatorInfo('V. Solis', 'Export Compliance Director', 'PROCOMER-CR-441', Color(0xFF059669));
       case 'tenant-naviera-don-jorge':
-        return const _OperatorInfo('Cap. Jorge B.', 'Marine Superintendent', 'IMO-CAPT-992140', Color(0xFFF59E0B));
+        return const _OperatorInfo('Cap. C. Jorge', 'Marine Superintendent', 'IMO-CAPT-992140', Color(0xFFF59E0B));
       case 'tenant-campabadal':
       default:
         return const _OperatorInfo('T. Omas', 'Senior Customs Broker', 'US-CBP-BRK-99214', Color(0xFF0284C7));
